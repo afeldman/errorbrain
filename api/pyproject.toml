@@ -1,0 +1,17 @@
+[project]
+name = "errorbrain-api"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "python-decouple",
+  "any-llm-sdk[all]>=1.2.0",
+]
+
+[tool.uv]
+python-preference = "managed"
+
+[project.scripts]
+errorbrain = "api.main:run"
+errorbrain-dev = "api.main:run_dev"
