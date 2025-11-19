@@ -1,0 +1,45 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with FAIL	github.com/errorbrain/sdk-go [setup failed]
+*.test
+
+# Output of the go toolchain
+*.out
+
+# Dependency directories (remove the 'vendor' directory when publishing but not if it's meant to be versioned)
+# vendor/
+
+# Go workspace file
+go.work
+
+# IDEs and editors
+.idea/        # IntelliJ IDEA
+.vscode/      # VS Code
+*.iml         # IntelliJ IDEA module files
+.DS_Store     # macOS
+Thumbs.db     # Windows
+
+# Environment variables
+.env
+.env.*
+.venv/        # Python virtual environment
+venv/         # Python virtual environment
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.o
+*.so
+
+# Build artifacts
+build/
+dist/
+
+# Log files
+*.log
+log/
+
