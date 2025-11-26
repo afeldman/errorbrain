@@ -1,0 +1,215 @@
+version: '3'
+
+vars:
+  PROJECT_NAME: ErrorBrain
+  API_DIR: api
+  SDK_PYTHON_DIR: sdk-python
+  SDK_GO_DIR: sdk-go
+  TERRAFORM_DIR: terraform-provider
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install all dependencies
+    cmds:
+      - echo "Installing API dependencies..."
+      - cd {{.API_DIR}} && uv sync --all-extras
+      - echo "Installing Python SDK dependencies..."
+      - cd {{.SDK_PYTHON_DIR}} && uv sync --all-extras
+      - echo "Installing Go dependencies..."
+      - cd {{.SDK_GO_DIR}} && go mod download
+      - cd {{.TERRAFORM_DIR}} && go mod download
+      - echo "✓ All dependencies installed!"
+
+  install-api:
+    desc: Install API dependencies only
+    cmds:
+      - cd {{.API_DIR}} && uv sync --all-extras
+
+  install-sdk-python:
+    desc: Install Python SDK dependencies only
+    cmds:
+      - cd {{.SDK_PYTHON_DIR}} && uv sync --all-extras
+
+  install-sdk-go:
+    desc: Install Go SDK dependencies only
+    cmds:
+      - cd {{.SDK_GO_DIR}} && go mod download
+
+  test:
+    desc: Run all tests
+    cmds:
+      - task: test-api
+      - task: test-sdk-go
+      - echo "✓ All tests passed!"
+
+  test-api:
+    desc: Run API tests
+    cmds:
+      - echo "Testing API..."
+      - cd {{.API_DIR}} && uv run pytest tests/ -v
+
+  test-sdk-go:
+    desc: Run Go SDK tests
+    cmds:
+      - echo "Testing Go SDK..."
+      - cd {{.SDK_GO_DIR}} && go test -v ./...
+
+  test-coverage:
+    desc: Run tests with coverage
+    cmds:
+      - echo "Running API tests with coverage..."
+      - cd {{.API_DIR}} && uv run pytest tests/ -v --cov=src --cov-report=html --cov-report=term
+      - echo "Coverage report {{.API_DIR}}/htmlcov/index.html"
+
+  lint:
+    desc: Run linters on all code
+    cmds:
+      - task: lint-api
+      - task: lint-sdk-python
+      - task: lint-sdk-go
+      - echo "✓ All lints passed!"
+
+  lint-api:
+    desc: Lint API code
+    cmds:
+      - echo "Linting API..."
+      - cd {{.API_DIR}} && uv run ruff check src/
+      - cd {{.API_DIR}} && uv run mypy src/
+
+  lint-sdk-python:
+    desc: Lint Python SDK
+    cmds:
+      - echo "Linting Python SDK..."
+      - cd {{.SDK_PYTHON_DIR}} && uv run ruff check src/
+      - cd {{.SDK_PYTHON_DIR}} && uv run mypy src/
+
+  lint-sdk-go:
+    desc: Lint Go SDK
+    cmds:
+      - echo "Linting Go SDK..."
+      - cd {{.SDK_GO_DIR}} && golangci-lint run
+
+  format:
+    desc: Format all code
+    cmds:
+      - task: format-python
+      - task: format-go
+      - echo "✓ Formatting complete!"
+
+  format-python:
+    desc: Format Python code
+    cmds:
+      - echo "Formatting Python code..."
+      - cd {{.API_DIR}} && uv run ruff format src/ tests/
+      - cd {{.SDK_PYTHON_DIR}} && uv run ruff format src/
+
+  format-go:
+    desc: Format Go code
+    cmds:
+      - echo "Formatting Go code..."
+      - cd {{.SDK_GO_DIR}} && go fmt ./...
+      - cd {{.TERRAFORM_DIR}} && go fmt ./...
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - echo "Cleaning build artifacts..."
+      - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name ".ruff_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "htmlcov" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "_build" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type f -name "*.pyc" -delete
+      - find . -type f -name ".coverage" -delete
+      - echo "✓ Clean complete!"
+
+  dev:
+    desc: Start API development server
+    cmds:
+      - cd {{.API_DIR}} && uv run errorbrain-server-dev
+
+  dev-watch:
+    desc: Start API with auto-reload
+    cmds:
+      - cd {{.API_DIR}} && uv run uvicorn errorbrain_server.main:app --reload --host 0.0.0.0 --port 8000
+
+  build-terraform:
+    desc: Build Terraform provider
+    cmds:
+      - cd {{.TERRAFORM_DIR}} && go build -o terraform-errorbrain
+
+  docs:
+    desc: Build all documentation
+    cmds:
+      - task: docs-api
+      - task: docs-sdk-python
+      - task: docs-sdk-go-info
+
+  docs-api:
+    desc: Build API documentation
+    cmds:
+      - echo "Building API documentation..."
+      - cd {{.API_DIR}}/docs && uv run sphinx-build -b html . _build/html
+      - echo "✓ API docs {{.API_DIR}}/docs/_build/html/index.html"
+
+  docs-sdk-python:
+    desc: Build Python SDK documentation
+    cmds:
+      - echo "Building Python SDK documentation..."
+      - cd {{.SDK_PYTHON_DIR}}/docs && uv run sphinx-build -b html . _build/html
+      - echo "✓ SDK docs {{.SDK_PYTHON_DIR}}/docs/_build/html/index.html"
+
+  docs-sdk-go:
+    desc: Start godoc server for Go SDK
+    cmds:
+      - echo "Starting godoc server..."
+      - cd {{.SDK_GO_DIR}} && godoc -http=:6060
+
+  docs-sdk-go-info:
+    desc: Show Go SDK documentation info
+    cmds:
+      - echo "Go SDK documentation:"
+      - echo "  Local - godoc -http=:6060 (then visit http://localhost:6060/pkg/github.com/afeldman/errorbrain/sdk-go/)"
+      - echo "  Online - https://pkg.go.dev/github.com/afeldman/errorbrain/sdk-go"
+
+  docs-open:
+    desc: Open documentation in browser
+    cmds:
+      - open {{.API_DIR}}/docs/_build/html/index.html
+      - open {{.SDK_PYTHON_DIR}}/docs/_build/html/index.html
+
+  git-hooks:
+    desc: Install pre-commit hooks
+    cmds:
+      - pip install pre-commit
+      - pre-commit install
+      - echo "✓ Git hooks installed!"
+
+  check:
+    desc: Run all checks (format, lint, test)
+    cmds:
+      - task: format
+      - task: lint
+      - task: test
+      - echo "✨ All checks passed!"
+
+  examples-python:
+    desc: Run Python example
+    cmds:
+      - cd examples && python python_example.py
+
+  examples-go:
+    desc: Run Go example
+    cmds:
+      - cd examples && go run go_example.go
+
+  examples-terraform:
+    desc: Show Terraform example
+    cmds:
+      - cat examples/terraform_example.tf

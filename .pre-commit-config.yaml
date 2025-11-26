@@ -1,0 +1,66 @@
+# Pre-commit hooks configuration
+# See https://pre-commit.com for more information
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+
+  # Python - Ruff linting and formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^(api|sdk-python)/
+      - id: ruff-format
+        files: ^(api|sdk-python)/
+
+  # Python - mypy type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        files: ^(api|sdk-python)/
+        additional_dependencies: [types-requests]
+        args: [--ignore-missing-imports]
+
+  # Go - formatting
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-fmt
+        files: ^sdk-go/
+      - id: go-vet
+        files: ^sdk-go/
+      - id: go-imports
+        files: ^sdk-go/
+
+  # Go - linting
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.55.2
+    hooks:
+      - id: golangci-lint
+        files: ^sdk-go/
+        args: [--config=sdk-go/.golangci.yml]
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+
+# CI mode (skip slow checks on CI)
+ci:
+  skip: [golangci-lint, mypy]

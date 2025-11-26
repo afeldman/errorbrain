@@ -32,14 +32,68 @@ venv/         # Python virtual environment
 # Python artifacts
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 *.o
 *.so
+.Python
 
-# Build artifacts
+# Python build and distribution
 build/
 dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Python testing and coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Python type checking and linting
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytype/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# uv (Python package manager)
+.uv/
+uv.lock
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Go build artifacts
+*.test
+*.out
+
+# Terraform
+*.tfstate
+*.tfstate.*
+terraform-errorbrain
+.terraform/
+.terraform.lock.hcl
 
 # Log files
 *.log
 log/
+
+# Sphinx documentation
+docs/_build/
+api/docs/_build/
+sdk-python/docs/_build/
+*.doctree
+
+# Pre-commit
+.pre-commit-cache/
 
