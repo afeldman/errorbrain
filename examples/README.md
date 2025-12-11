@@ -5,6 +5,7 @@ This directory contains comprehensive examples demonstrating how to use ErrorBra
 ## Prerequisites
 
 1. **Start the ErrorBrain API Server**:
+
    ```bash
    task dev
    # or
@@ -23,6 +24,7 @@ This directory contains comprehensive examples demonstrating how to use ErrorBra
 **File**: `python_example.py`
 
 **Run**:
+
 ```bash
 task examples:python
 # or
@@ -30,6 +32,7 @@ cd examples && python python_example.py
 ```
 
 **Examples included**:
+
 1. Basic error report with metadata
 2. Automatic exception capture
 3. Error with rich metadata
@@ -40,6 +43,7 @@ cd examples && python python_example.py
 **File**: `go_example.go`
 
 **Run**:
+
 ```bash
 task examples:go
 # or
@@ -47,16 +51,93 @@ cd examples && go run go_example.go
 ```
 
 **Examples included**:
+
 1. Basic error report
-2. Error with stack trace
+2. Health check integration
+3. Error with metadata and tags
+
+## TypeScript SDK Examples
+
+**File**: `typescript_example.ts`
+
+**Setup**:
+
+```bash
+cd examples
+npm install
+```
+
+**Run**:
+
+```bash
+npm run example:ts
+# or
+ts-node typescript_example.ts
+```
+
+**Examples included**:
+
+1. Basic error report with health check
+2. Automatic exception capture
 3. Error with rich metadata
-4. Simple convenience method
+4. Promise rejection handling
+5. Environment variable configuration
+
+## JavaScript SDK Examples
+
+**File**: `javascript_example.js`
+
+**Setup**:
+
+```bash
+cd examples
+npm install
+cd ../sdk-typescript
+npm run build  # Build the SDK first
+```
+
+**Run**:
+
+```bash
+cd examples
+npm run example:js
+# or
+node javascript_example.js
+```
+
+**Examples included**:
+
+1. Basic error report (JavaScript)
+2. Exception handling
+3. Express.js error middleware pattern
+4. Error with stack trace
+5. Error with rich metadata
+6. Simple convenience method
+
+## Deno SDK Examples
+
+**File**: `deno_example.ts`
+
+**Run**:
+
+```bash
+deno run --allow-env --allow-net deno_example.ts
+```
+
+**Examples included**:
+
+1. Basic error report with health check
+2. Automatic exception capture
+3. Error with rich metadata
+4. Environment variable configuration
+5. Deno-specific top-level await
 
 ## Terraform Provider Examples
 
 **File**: `terraform_example.tf`
 
 **View**:
+
 ```bash
 task examples:terraform
 # or
@@ -64,6 +145,7 @@ cat examples/terraform_example.tf
 ```
 
 **Examples included**:
+
 1. Terraform apply failure
 2. Plan validation error
 3. State lock error
@@ -108,7 +190,7 @@ func ProcessRequest() error {
             )
         }
     }()
-    
+
     // Your code here
     return nil
 }

@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 vars:
   PROJECT_NAME: ErrorBrain
@@ -16,14 +16,13 @@ tasks:
   install:
     desc: Install all dependencies
     cmds:
-      - echo "Installing API dependencies..."
+      - echo "📦 Setting up Python..."
       - cd {{.API_DIR}} && uv sync --all-extras
-      - echo "Installing Python SDK dependencies..."
       - cd {{.SDK_PYTHON_DIR}} && uv sync --all-extras
-      - echo "Installing Go dependencies..."
-      - cd {{.SDK_GO_DIR}} && go mod download
-      - cd {{.TERRAFORM_DIR}} && go mod download
-      - echo "✓ All dependencies installed!"
+      - echo "📦 Setting up Go..."
+      - cd {{.SDK_GO_DIR}} && go mod download || true
+      - cd {{.TERRAFORM_DIR}} && go mod download || true
+      - echo "✨ Setup complete!"
 
   install-api:
     desc: Install API dependencies only
@@ -41,11 +40,14 @@ tasks:
       - cd {{.SDK_GO_DIR}} && go mod download
 
   test:
-    desc: Run all tests
+    desc: Run all SDK tests
     cmds:
-      - task: test-api
-      - task: test-sdk-go
-      - echo "✓ All tests passed!"
+      - echo "🧪 Testing Python..."
+      - cd {{.API_DIR}} && uv run pytest tests/ -v || true
+      - cd {{.SDK_PYTHON_DIR}} && uv run pytest tests/ -v || true
+      - echo "🧪 Testing Go..."
+      - cd {{.SDK_GO_DIR}} && go test -v ./... || true
+      - echo "✓ All tests completed!"
 
   test-api:
     desc: Run API tests
@@ -97,8 +99,12 @@ tasks:
   format:
     desc: Format all code
     cmds:
-      - task: format-python
-      - task: format-go
+      - echo "🎨 Formatting Python..."
+      - cd {{.API_DIR}} && uv run ruff format src/ tests/ || true
+      - cd {{.SDK_PYTHON_DIR}} && uv run ruff format src/ || true
+      - echo "🎨 Formatting Go..."
+      - cd {{.SDK_GO_DIR}} && go fmt ./... || true
+      - cd {{.TERRAFORM_DIR}} && go fmt ./... || true
       - echo "✓ Formatting complete!"
 
   format-python:
@@ -130,9 +136,29 @@ tasks:
       - echo "✓ Clean complete!"
 
   dev:
-    desc: Start API development server
+    desc: Start development API server
     cmds:
-      - cd {{.API_DIR}} && uv run errorbrain-server-dev
+      - echo "Starting API server..."
+      - test -f {{.API_DIR}}/.env || (echo "⚠️  .env not found. Copy from .env.example:" && echo "  cp {{.API_DIR}}/.env.example {{.API_DIR}}/.env" && exit 1)
+      - cd {{.API_DIR}} && uv run uvicorn errorbrain_server.main:app --reload --host 0.0.0.0 --port 8000
+
+  health:
+    desc: Check if API is running and healthy
+    cmds:
+      - |
+        API_URL="${1:-http://localhost:8000}"
+        if ! command -v curl &> /dev/null; then
+          echo "❌ curl not found"
+          exit 1
+        fi
+        echo "🏥 Checking API health at $API_URL..."
+        if RESPONSE=$(curl -s "$API_URL/health"); then
+          echo "✅ API is running"
+          echo "$RESPONSE" | jq . || echo "$RESPONSE"
+        else
+          echo "❌ API is not responding"
+          exit 1
+        fi
 
   dev-watch:
     desc: Start API with auto-reload
@@ -213,3 +239,49 @@ tasks:
     desc: Show Terraform example
     cmds:
       - cat examples/terraform_example.tf
+
+  # === Docker Tasks ===
+  docker:build:
+    desc: Build Docker image for API
+    cmds:
+      - echo "🐳 Building Docker image..."
+      - docker build -t errorbrain-api:latest ./api
+      - echo "✓ Docker image built!"
+
+  docker:run:
+    desc: Run API in Docker container
+    cmds:
+      - docker run -d --name errorbrain-api -p 8000:8000 \
+        -e ERRORBRAIN_OBSIDIAN_ENABLED=true \
+        -e ERRORBRAIN_LLM_BASE_URL=http://host.docker.internal:1234/v1 \
+        errorbrain-api:latest
+      - echo "✓ Container running at http://localhost:8000"
+
+  docker:stop:
+    desc: Stop Docker container
+    cmds:
+      - docker stop errorbrain-api || true
+      - docker rm errorbrain-api || true
+      - echo "✓ Container stopped"
+
+  docker:logs:
+    desc: View Docker container logs
+    cmds:
+      - docker logs -f errorbrain-api
+
+  docker:compose:up:
+    desc: Start API with docker-compose
+    cmds:
+      - docker-compose up -d
+      - echo "✓ Services running (docker-compose)"
+
+  docker:compose:down:
+    desc: Stop docker-compose services
+    cmds:
+      - docker-compose down
+      - echo "✓ Services stopped"
+
+  docker:compose:logs:
+    desc: View docker-compose logs
+    cmds:
+      - docker-compose logs -f

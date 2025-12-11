@@ -1,0 +1,929 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; ErrorBrain Server 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module Overview" href="modules.html" />
+    <link rel="prev" title="ErrorBrain Server Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ErrorBrain Server
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-errorbrain_server.main">Main Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.ErrorReport"><code class="docutils literal notranslate"><span class="pre">ErrorReport</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.language"><code class="docutils literal notranslate"><span class="pre">ErrorReport.language</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.project"><code class="docutils literal notranslate"><span class="pre">ErrorReport.project</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.message"><code class="docutils literal notranslate"><span class="pre">ErrorReport.message</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.traceback"><code class="docutils literal notranslate"><span class="pre">ErrorReport.traceback</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.tags"><code class="docutils literal notranslate"><span class="pre">ErrorReport.tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.metadata"><code class="docutils literal notranslate"><span class="pre">ErrorReport.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.store_in_vault"><code class="docutils literal notranslate"><span class="pre">ErrorReport.store_in_vault</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">ErrorReport.language</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">ErrorReport.project</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">ErrorReport.message</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">ErrorReport.traceback</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">ErrorReport.tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">ErrorReport.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">ErrorReport.store_in_vault</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorReport.model_config"><code class="docutils literal notranslate"><span class="pre">ErrorReport.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse"><code class="docutils literal notranslate"><span class="pre">ErrorResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.id"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.project"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.project</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.language"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.language</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.tags"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.created_at"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.created_at</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.explanation"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.explanation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.saved_path"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.saved_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.project</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.language</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.created_at</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.explanation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.saved_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#errorbrain_server.main.ErrorResponse.model_config"><code class="docutils literal notranslate"><span class="pre">ErrorResponse.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.build_error_prompt"><code class="docutils literal notranslate"><span class="pre">build_error_prompt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.explain_error_with_llm"><code class="docutils literal notranslate"><span class="pre">explain_error_with_llm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.save_markdown_to_obsidian"><code class="docutils literal notranslate"><span class="pre">save_markdown_to_obsidian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.healthz"><code class="docutils literal notranslate"><span class="pre">healthz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.create_error"><code class="docutils literal notranslate"><span class="pre">create_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.run_dev"><code class="docutils literal notranslate"><span class="pre">run_dev()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#errorbrain_server.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#errorreport">ErrorReport</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id14"><code class="docutils literal notranslate"><span class="pre">ErrorReport</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#errorresponse">ErrorResponse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id30"><code class="docutils literal notranslate"><span class="pre">ErrorResponse</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#build-error-prompt">build_error_prompt</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id46"><code class="docutils literal notranslate"><span class="pre">build_error_prompt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#explain-error-with-llm">explain_error_with_llm</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id47"><code class="docutils literal notranslate"><span class="pre">explain_error_with_llm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#save-markdown-to-obsidian">save_markdown_to_obsidian</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id48"><code class="docutils literal notranslate"><span class="pre">save_markdown_to_obsidian()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#endpoints">Endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#healthz">healthz</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id49"><code class="docutils literal notranslate"><span class="pre">healthz()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#create-error">create_error</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id50"><code class="docutils literal notranslate"><span class="pre">create_error()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#entry-points">Entry Points</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#run-dev">run_dev</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id51"><code class="docutils literal notranslate"><span class="pre">run_dev()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#run">run</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id52"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Module Overview</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ErrorBrain Server</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="module-errorbrain_server.main">
+<span id="main-module"></span><h2>Main Module<a class="headerlink" href="#module-errorbrain_server.main" title="Link to this heading"></a></h2>
+<p>ErrorBrain Server - FastAPI application for error tracking and AI analysis.</p>
+<p>This module provides a REST API for capturing errors from applications,
+analyzing them with LLM (Local or Cloud), and storing them in an Obsidian vault.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">ErrorReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags:</span> <span class="pre">list[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata:</span> <span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_in_vault:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/errorbrain_server/main.html#ErrorReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.ErrorReport" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Error report submitted by client SDKs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.language">
+<span class="sig-name descname"><span class="pre">language</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.language" title="Link to this definition"></a></dt>
+<dd><p>Programming language (e.g., python, go, terraform).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.project">
+<span class="sig-name descname"><span class="pre">project</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.project" title="Link to this definition"></a></dt>
+<dd><p>Service or project name (e.g., billing-service).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.message">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.message" title="Link to this definition"></a></dt>
+<dd><p>Error message or exception message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.traceback">
+<span class="sig-name descname"><span class="pre">traceback</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.traceback" title="Link to this definition"></a></dt>
+<dd><p>Optional stack trace or detailed error output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.tags" title="Link to this definition"></a></dt>
+<dd><p>List of tags for categorization (e.g., [‘cron’, ‘prod’]).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.metadata" title="Link to this definition"></a></dt>
+<dd><p>Additional context like user_id, request_id, version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.store_in_vault">
+<span class="sig-name descname"><span class="pre">store_in_vault</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorReport.store_in_vault" title="Link to this definition"></a></dt>
+<dd><p>Whether to save the error as Markdown in Obsidian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">language</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">project</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">traceback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">store_in_vault</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorReport.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#errorbrain_server.main.ErrorReport.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">ErrorResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">saved_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/errorbrain_server/main.html#ErrorResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.ErrorResponse" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Response after error analysis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.id" title="Link to this definition"></a></dt>
+<dd><p>Unique error identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.project">
+<span class="sig-name descname"><span class="pre">project</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.project" title="Link to this definition"></a></dt>
+<dd><p>Project name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.language">
+<span class="sig-name descname"><span class="pre">language</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.language" title="Link to this definition"></a></dt>
+<dd><p>Programming language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.tags" title="Link to this definition"></a></dt>
+<dd><p>List of tags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.created_at" title="Link to this definition"></a></dt>
+<dd><p>Timestamp of error creation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)">datetime.datetime</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.explanation">
+<span class="sig-name descname"><span class="pre">explanation</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.explanation" title="Link to this definition"></a></dt>
+<dd><p>AI-generated explanation of the error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.saved_path">
+<span class="sig-name descname"><span class="pre">saved_path</span></span><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.saved_path" title="Link to this definition"></a></dt>
+<dd><p>Path where the error was saved (if applicable).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">project</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">language</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id9" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id10" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">created_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#id11" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">explanation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id12" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">saved_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#id13" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="errorbrain_server.main.ErrorResponse.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#errorbrain_server.main.ErrorResponse.model_config" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.build_error_prompt">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">build_error_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#build_error_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.build_error_prompt" title="Link to this definition"></a></dt>
+<dd><p>Build a prompt for the LLM to analyze the error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – The error report containing error details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted prompt string for LLM analysis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.explain_error_with_llm">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">explain_error_with_llm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#explain_error_with_llm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.explain_error_with_llm" title="Link to this definition"></a></dt>
+<dd><p>Explain an error using an LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – The error report to analyze.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The LLM’s explanation of the error.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the LLM call fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.save_markdown_to_obsidian">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">save_markdown_to_obsidian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#save_markdown_to_obsidian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.save_markdown_to_obsidian" title="Link to this definition"></a></dt>
+<dd><p>Save error report as Markdown in Obsidian vault.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report</strong> – The error report to save.</p></li>
+<li><p><strong>explanation</strong> – The LLM-generated explanation.</p></li>
+<li><p><strong>err_id</strong> – Unique identifier for the error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The file path where the error was saved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.healthz">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">healthz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#healthz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.healthz" title="Link to this definition"></a></dt>
+<dd><p>Health check endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing server status and configuration.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.create_error">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">create_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#id30" title="errorbrain_server.main.ErrorResponse"><span class="pre">ErrorResponse</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#create_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.create_error" title="Link to this definition"></a></dt>
+<dd><p>Process and analyze an error report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – The error report submitted by client SDK.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ErrorResponse containing analysis and storage information.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>HTTPException</strong> – If LLM analysis fails (502).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.run_dev">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">run_dev</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#run_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.run_dev" title="Link to this definition"></a></dt>
+<dd><p>Run development server with auto-reload.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="errorbrain_server.main.run">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#errorbrain_server.main.run" title="Link to this definition"></a></dt>
+<dd><p>Run production server.</p>
+</dd></dl>
+
+</section>
+<section id="models">
+<h2>Models<a class="headerlink" href="#models" title="Link to this heading"></a></h2>
+<section id="errorreport">
+<h3>ErrorReport<a class="headerlink" href="#errorreport" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="id14">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">ErrorReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags:</span> <span class="pre">list[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata:</span> <span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_in_vault:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/errorbrain_server/main.html#ErrorReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id14" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Error report submitted by client SDKs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">language</span></span><a class="headerlink" href="#id15" title="Link to this definition"></a></dt>
+<dd><p>Programming language (e.g., python, go, terraform).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">project</span></span><a class="headerlink" href="#id16" title="Link to this definition"></a></dt>
+<dd><p>Service or project name (e.g., billing-service).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#id17" title="Link to this definition"></a></dt>
+<dd><p>Error message or exception message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">traceback</span></span><a class="headerlink" href="#id18" title="Link to this definition"></a></dt>
+<dd><p>Optional stack trace or detailed error output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">tags</span></span><a class="headerlink" href="#id19" title="Link to this definition"></a></dt>
+<dd><p>List of tags for categorization (e.g., [‘cron’, ‘prod’]).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#id20" title="Link to this definition"></a></dt>
+<dd><p>Additional context like user_id, request_id, version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, Any] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">store_in_vault</span></span><a class="headerlink" href="#id21" title="Link to this definition"></a></dt>
+<dd><p>Whether to save the error as Markdown in Obsidian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id22">
+<span class="sig-name descname"><span class="pre">language</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id22" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id23">
+<span class="sig-name descname"><span class="pre">project</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id23" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id24" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id25">
+<span class="sig-name descname"><span class="pre">traceback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#id25" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id26">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id26" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id27">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#id27" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id28">
+<span class="sig-name descname"><span class="pre">store_in_vault</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#id28" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id29">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#id29" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="errorresponse">
+<h3>ErrorResponse<a class="headerlink" href="#errorresponse" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="id30">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">ErrorResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">saved_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/errorbrain_server/main.html#ErrorResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id30" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Response after error analysis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id31">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id31" title="Link to this definition"></a></dt>
+<dd><p>Unique error identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id32">
+<span class="sig-name descname"><span class="pre">project</span></span><a class="headerlink" href="#id32" title="Link to this definition"></a></dt>
+<dd><p>Project name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id33">
+<span class="sig-name descname"><span class="pre">language</span></span><a class="headerlink" href="#id33" title="Link to this definition"></a></dt>
+<dd><p>Programming language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id34">
+<span class="sig-name descname"><span class="pre">tags</span></span><a class="headerlink" href="#id34" title="Link to this definition"></a></dt>
+<dd><p>List of tags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id35">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#id35" title="Link to this definition"></a></dt>
+<dd><p>Timestamp of error creation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id36">
+<span class="sig-name descname"><span class="pre">explanation</span></span><a class="headerlink" href="#id36" title="Link to this definition"></a></dt>
+<dd><p>AI-generated explanation of the error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id37">
+<span class="sig-name descname"><span class="pre">saved_path</span></span><a class="headerlink" href="#id37" title="Link to this definition"></a></dt>
+<dd><p>Path where the error was saved (if applicable).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id38">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id38" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id39">
+<span class="sig-name descname"><span class="pre">project</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id39" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id40">
+<span class="sig-name descname"><span class="pre">language</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id40" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id41">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id41" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id42">
+<span class="sig-name descname"><span class="pre">created_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#id42" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id43">
+<span class="sig-name descname"><span class="pre">explanation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#id43" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id44">
+<span class="sig-name descname"><span class="pre">saved_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#id44" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id45">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#id45" title="Link to this definition"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<section id="build-error-prompt">
+<h3>build_error_prompt<a class="headerlink" href="#build-error-prompt" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id46">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">build_error_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#build_error_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id46" title="Link to this definition"></a></dt>
+<dd><p>Build a prompt for the LLM to analyze the error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – The error report containing error details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A formatted prompt string for LLM analysis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="explain-error-with-llm">
+<h3>explain_error_with_llm<a class="headerlink" href="#explain-error-with-llm" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id47">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">explain_error_with_llm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#explain_error_with_llm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id47" title="Link to this definition"></a></dt>
+<dd><p>Explain an error using an LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – The error report to analyze.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The LLM’s explanation of the error.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the LLM call fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="save-markdown-to-obsidian">
+<h3>save_markdown_to_obsidian<a class="headerlink" href="#save-markdown-to-obsidian" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id48">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">save_markdown_to_obsidian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#save_markdown_to_obsidian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id48" title="Link to this definition"></a></dt>
+<dd><p>Save error report as Markdown in Obsidian vault.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report</strong> – The error report to save.</p></li>
+<li><p><strong>explanation</strong> – The LLM-generated explanation.</p></li>
+<li><p><strong>err_id</strong> – Unique identifier for the error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The file path where the error was saved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="endpoints">
+<h2>Endpoints<a class="headerlink" href="#endpoints" title="Link to this heading"></a></h2>
+<section id="healthz">
+<h3>healthz<a class="headerlink" href="#healthz" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id49">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">healthz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#healthz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id49" title="Link to this definition"></a></dt>
+<dd><p>Health check endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing server status and configuration.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="create-error">
+<h3>create_error<a class="headerlink" href="#create-error" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id50">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">create_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#id14" title="errorbrain_server.main.ErrorReport"><span class="pre">ErrorReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#id30" title="errorbrain_server.main.ErrorResponse"><span class="pre">ErrorResponse</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#create_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id50" title="Link to this definition"></a></dt>
+<dd><p>Process and analyze an error report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – The error report submitted by client SDK.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ErrorResponse containing analysis and storage information.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>HTTPException</strong> – If LLM analysis fails (502).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="entry-points">
+<h2>Entry Points<a class="headerlink" href="#entry-points" title="Link to this heading"></a></h2>
+<section id="run-dev">
+<h3>run_dev<a class="headerlink" href="#run-dev" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id51">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">run_dev</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#run_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id51" title="Link to this definition"></a></dt>
+<dd><p>Run development server with auto-reload.</p>
+</dd></dl>
+
+</section>
+<section id="run">
+<h3>run<a class="headerlink" href="#run" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="id52">
+<span class="sig-prename descclassname"><span class="pre">errorbrain_server.main.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/errorbrain_server/main.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id52" title="Link to this definition"></a></dt>
+<dd><p>Run production server.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="ErrorBrain Server Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Module Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, ErrorBrain Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

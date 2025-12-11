@@ -1,0 +1,98 @@
+name: Lint and Format
+
+on:
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
+
+jobs:
+    python-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.11"
+
+            - name: Install dependencies
+              run: |
+                  pip install uv
+                  cd api && uv sync --all-extras
+
+            - name: Lint with ruff
+              run: cd api && uv run ruff check src/
+
+            - name: Format check with black
+              run: cd api && uv run black --check src/ || true
+
+            - name: Type check with mypy
+              run: cd api && uv run mypy src/ || true
+
+    go-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Go
+              uses: actions/setup-go@v4
+              with:
+                  go-version: "1.21"
+
+            - name: golangci-lint
+              uses: golangci/golangci-lint-action@v3
+              with:
+                  version: latest
+                  working-directory: sdk-go
+
+            - name: Format check
+              run: |
+                  cd sdk-go && gofmt -s -d . || true
+
+    rust-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Clippy
+              run: cd sdk-rust && cargo clippy --all -- -D warnings
+
+            - name: Format check
+              run: cd sdk-rust && cargo fmt --check
+
+    typescript-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "20.x"
+
+            - name: Install dependencies
+              run: cd sdk-typescript && npm ci
+
+            - name: ESLint
+              run: cd sdk-typescript && npm run lint
+
+            - name: Prettier check
+              run: cd sdk-typescript && npm run fmt:check || true
+
+    cpp-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Install clang-tidy
+              run: sudo apt-get install -y clang-tidy
+
+            - name: clang-tidy
+              run: |
+                  cd sdk-cpp/src
+                  clang-tidy *.cpp -- -I../include || true

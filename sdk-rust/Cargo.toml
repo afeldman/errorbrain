@@ -1,0 +1,43 @@
+[package]
+name = "errorbrain-sdk"
+version = "0.1.0"
+edition = "2021"
+authors = ["ErrorBrain Contributors"]
+description = "ErrorBrain SDK for Rust - AI-powered debugging memory"
+license = "MIT"
+repository = "https://github.com/errorbrain/errorbrain"
+keywords = ["errorbrain", "error-tracking", "debugging", "ai", "llm"]
+categories = ["api-bindings", "development-tools"]
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+thiserror = "1.0"
+backtrace = "0.3"
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockito = "1.2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
+[[example]]
+name = "exception"
+path = "examples/exception.rs"
+
+[[example]]
+name = "metadata"
+path = "examples/metadata.rs"

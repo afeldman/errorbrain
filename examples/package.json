@@ -1,0 +1,17 @@
+{
+  "name": "errorbrain-examples",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "example:ts": "ts-node typescript_example.ts",
+    "example:js": "node javascript_example.js"
+  },
+  "dependencies": {
+    "@errorbrain/sdk": "file:../sdk-typescript"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

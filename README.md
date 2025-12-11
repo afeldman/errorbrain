@@ -8,281 +8,279 @@ Jeder Fehler wird zu dauerhaftem, dokumentiertem und durchsuchbarem Wissen.
 
 ## 🚀 Features
 
-### ✅ Fehler aus jeder Sprache erfassen
+- ✅ **6 SDKs** - Python, Go, TypeScript, Deno, Rust, C++
+- ✅ **FastAPI Server** - Modern, async, fully typed
+- ✅ **AI-Powered** - Fehleranalyse mit LM Studio (lokal) oder OpenAI
+- ✅ **Obsidian Integration** - Automatische Second Brain Speicherung
+- ✅ **Production-Ready** - Tests, CI/CD, Dokumentation
+- ✅ **Open Source** - MIT License
 
-- **Python SDK** - Client für FastAPI-Integration
-- **Go SDK** - Client für Go-Services
-- **Terraform CLI Wrapper** - Erfasst terraform apply-Fehler
+## 📦 Schnellstart
 
-### ✅ Auto-Analyse mit deiner KI
+### 1. Setup durchführen
 
-Funktioniert mit:
-
-- **LM Studio** (lokal, empfohlen für Tests)
-- OpenAI, Anthropic, Azure
-- Beliebige OpenAI-kompatible Endpoints
-
-### ✅ Automatische Speicherung im Second Brain
-
-- Obsidian Markdown Vault
-- Lokaler Markdown-Ordner
-- Git Knowledge Repo
-
-### ✅ Wiederverwendbares Engineering-Wissen
-
-- Behebe denselben Fehler nie zweimal
-- Onboarde Entwickler schneller
-- Zentralisierte Incident-Dokumentation
-
-## 🏗️ Architektur
-
-```
-Applications (Python, Go, Terraform)
-        ↓
-ErrorBrain SDK (send error + trace + metadata)
-        ↓
-ErrorBrain API (FastAPI)
-        ↓
-- LM Studio / LLM (explain)
-- Obsidian Vault (store)
-        ↓
-Engineering Second Brain
+```bash
+./setup.sh
 ```
 
-## 📦 Repository Layout
+Dies installiert alle Dependencies für alle SDKs (Python, Go, Rust, TypeScript, Deno, C++).
+
+### 2. .env konfigurieren
+
+```bash
+cd api
+cp .env.example .env
+# Bearbeite .env mit deinen Einstellungen
+```
+
+### 3. Server starten
+
+```bash
+./dev-server.sh
+```
+
+API läuft auf:
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### 4. Health Check
+
+```bash
+./health-check.sh
+```
+
+## 🛠️ Verfügbare Befehle
+
+### Shell Scripts (Einfach)
+
+```bash
+./setup.sh           # Setup durchführen
+./dev-server.sh      # Entwicklungsserver starten
+./run-tests.sh       # Alle Tests ausführen
+./health-check.sh    # API-Gesundheit prüfen
+./format-code.sh     # Code formatieren
+```
+
+### Make Targets (Shortcuts)
+
+```bash
+make setup    # Equivalent to: ./setup.sh
+make dev      # Equivalent to: ./dev-server.sh
+make test     # Equivalent to: ./run-tests.sh
+make health   # Equivalent to: ./health-check.sh
+make fmt      # Equivalent to: ./format-code.sh
+```
+
+### Task Runner (Advanced)
+
+```bash
+task test-all        # Teste alle SDKs
+task build-all       # Baue alle SDKs
+task lint            # Linting für alle
+task fmt             # Code-Formatierung
+task docs-all        # Dokumentation bauen
+task clean-all       # Artefakte löschen
+task --list-all      # Alle Tasks anzeigen
+```
+
+## 📁 Repository-Struktur
 
 ```
-api/                    → FastAPI Server (src/errorbrain_server)
+api/                    → FastAPI Server
 sdk-python/             → Python SDK
 sdk-go/                 → Go SDK
+sdk-typescript/         → TypeScript/JavaScript SDK
+sdk-deno/               → Deno SDK
+sdk-rust/               → Rust SDK (async/tokio)
+sdk-cpp/                → C++ SDK (modern C++17)
 terraform-provider/     → Terraform CLI Wrapper
-examples/               → Code examples for all languages
+.github/workflows/      → GitHub Actions CI/CD
+docs/                   → Sphinx & Doxygen Docs
+examples/               → Code examples
 tests/                  → Test suites
-.pre-commit-config.yaml → Git hooks configuration
-Makefile                → Development commands
-SETUP.md                → Detailed setup guide
 ```
 
-## 🚀 Quick Start
+## 💻 SDK Beispiele
 
-### 1. LM Studio starten
-
-1. Lade [LM Studio](https://lmstudio.ai/) herunter
-2. Lade ein Modell (z.B. Llama 3.2, Mistral)
-3. Starte den lokalen Server (Port 1234)
-
-### 2. ErrorBrain API starten
-
-```bash
-cd api
-uv sync --all-extras
-
-# .env erstellen
-cp .env.example .env
-# Passe ERRORBRAIN_OBSIDIAN_PATH an!
-
-# Server starten (Development)
-uv run errorbrain-server-dev
-
-# Oder mit Make
-make dev-api
-```
-
-API läuft auf: `http://localhost:8000`
-
-**Tests ausführen:**
-
-```bash
-cd api
-uv run pytest tests/ -v
-
-# Oder
-make test
-uv run errorbrain-dev
-```
-
-API läuft auf: `http://localhost:8000`
-
-### 3. Python SDK verwenden
-
-```bash
-pip install -e ./sdk-python
-```
+### Python
 
 ```python
 from errorbrain import ErrorBrainClient
 
 client = ErrorBrainClient()
-
-try:
-    result = 1 / 0
-except Exception as e:
-    response = client.send_exception(
-        exc=e,
-        project="billing-service",
-        tags=["prod"],
-    )
-    print(f"Error analyzed: {response.id}")
-    print(f"Saved to: {response.saved_path}")
+response = client.send_exception(
+    exc=my_exception,
+    project="my-service",
+    tags=["prod"]
+)
+print(f"Error ID: {response.id}")
 ```
 
-### 4. Go SDK verwenden
-
-```bash
-go get github.com/afeldman/errorbrain/sdk-go
-```
+### Go
 
 ```go
-import errorbrain "github.com/afeldman/errorbrain/sdk-go"
-
 client := errorbrain.NewClient("")
-
-report := &errorbrain.ErrorReport{
+response, err := client.SendError(&errorbrain.ErrorReport{
     Language: "go",
-    Project:  "payment-service",
-    Message:  "redis connection failed",
-    Tags:     []string{"prod"},
-    StoreInVault: true,
-}
-
-response, err := client.SendError(report)
+    Project:  "my-service",
+    Message:  "database failed",
+})
 ```
 
-### 5. Terraform Wrapper
+### TypeScript
+
+```typescript
+const client = new ErrorBrainClient();
+const response = await client.sendException(error, "my-service", {
+  tags: ["prod"],
+});
+```
+
+### Deno
+
+```typescript
+import { ErrorBrainClient } from "./sdk-deno/src/mod.ts";
+const client = new ErrorBrainClient();
+const response = await client.sendException(error, "my-service");
+```
+
+### Rust
+
+```rust
+let client = ErrorBrainClient::new("http://localhost:8000".to_string());
+let report = ErrorReport::new("rust", "my-service", "Error message")
+    .with_tags(vec!["prod".to_string()]);
+let response = client.send_error(&report).await?;
+```
+
+### C++
+
+```cpp
+ErrorBrain::ErrorBrainClient client("http://localhost:8000");
+ErrorBrain::ErrorReport report("cpp", "my-service", "Something wrong");
+auto response = client.send_error(report);
+std::cout << "Error ID: " << response.id() << std::endl;
+```
+
+## 🌍 Umgebungsvariablen
+
+Erstelle `.env` in `api/`:
 
 ```bash
-cd terraform-provider
-go build -o terraform-errorbrain
-sudo mv terraform-errorbrain /usr/local/bin/
+# LM Studio (lokal, empfohlen für Tests)
+ERRORBRAIN_LLM_PROVIDER=openai
+ERRORBRAIN_LLM_MODEL=local-model
+ERRORBRAIN_LLM_BASE_URL=http://localhost:1234/v1
+ERRORBRAIN_LLM_API_KEY=lm-studio
 
-# Verwenden
-export ERRORBRAIN_PROJECT="my-infrastructure"
-terraform-errorbrain wrap apply
+# Obsidian Vault
+ERRORBRAIN_OBSIDIAN_ENABLED=true
+ERRORBRAIN_OBSIDIAN_PATH=/path/to/vault/errors
+
+# Optional: Cloud LLM
+# ERRORBRAIN_LLM_PROVIDER=openai
+# ERRORBRAIN_LLM_API_KEY=sk-...
 ```
 
-## 📚 Vollständige Dokumentation
+## 📋 LM Studio Setup
 
-Siehe **[SETUP.md](./SETUP.md)** für:
+1. Lade [LM Studio](https://lmstudio.ai/) herunter & installiere
+2. Gehe zu "Discover" und lade ein Modell:
+   - `meta-llama-3.1-8b-instruct`
+   - `mistral-7b-instruct-v0.2`
+   - `phi-3-mini-4k-instruct`
+3. Gehe zu "Local Server" und starte den Server
+4. Server läuft auf: `http://localhost:1234`
 
-- Detaillierte LM Studio-Konfiguration
-- API-Konfiguration & Umgebungsvariablen
-- SDK-Installation für alle Sprachen
-- Obsidian-Integration & Dataview-Queries
-- Troubleshooting & Best Practices
-
-## 🧪 Beispiele
+Test:
 
 ```bash
-cd examples
-
-# Python
-python python_example.py
-
-# Go
-go run go_example.go
+curl http://localhost:1234/v1/models
 ```
-
-## 🛠️ Development
-
-### Alle Dependencies installieren
-
-```bash
-make install
-```
-
-### Alle Tests ausführen
-
-```bash
-make test
-```
-
-### Code formatieren
-
-```bash
-make format
-```
-
-### Linting ausführen
-
-```bash
-make lint
-```
-
-### Alles prüfen (Format + Lint + Test)
-
-```bash
-make check-all
-```
-
-### Git Hooks installieren
-
-```bash
-make setup-git-hooks
-# oder
-pip install pre-commit
-pre-commit install
-```
-
-## 📐 Code-Qualität
-
-### Python (API + SDK)
-
-- **Linting**: Ruff
-- **Type Checking**: mypy
-- **Testing**: pytest
-- **Coverage**: pytest-cov
-- **Docstrings**: Google Style
-
-### Go (SDK + Terraform Provider)
-
-- **Linting**: golangci-lint
-- **Testing**: Go testing package
-- **Documentation**: godoc
-- **Formatting**: gofmt
 
 ## 📚 Dokumentation
 
-- **[SETUP.md](./SETUP.md)** - Detaillierte Setup-Anleitung
-- **[api/README.md](./api/README.md)** - API Dokumentation
-- **[sdk-python/README.md](./sdk-python/README.md)** - Python SDK
-- **[sdk-go/README.md](./sdk-go/README.md)** - Go SDK
-- **[terraform-provider/README.md](./terraform-provider/README.md)** - Terraform Integration
+### Generieren
 
-Fehler werden automatisch gespeichert in:
+```bash
+# Sphinx + Doxygen
+task docs-all
 
-```
-/Users/anton.feldmann/lynq/errors/
-├── 20241126-120534-billing-service-abc123.md
-└── ...
+# Oder einzeln
+task docs-python     # Sphinx (Python/Go)
+task docs-cpp        # Doxygen (C++)
+task docs-open       # Im Browser öffnen
 ```
 
-Jede Datei enthält:
+### Code-Qualität Standards
 
-- Fehlermeldung & Stacktrace
-- KI-Erklärung & Lösungsvorschläge
-- Metadata (Tags, Projekt, Sprache)
-- Frontmatter für Dataview-Queries
+Alle Komponenten folgen **Google-Style Docstrings**.
 
-## 🧩 Roadmap
+**Python:**
 
-- [x] Python SDK v1
-- [x] Go SDK v1
-- [x] Terraform CLI Wrapper
-- [ ] Web Dashboard
-- [ ] Embedding-basierte Fehlersuche
-- [ ] GitOps Vault Sync
-- [ ] Slack/Discord Webhooks
+```python
+def send_error(report: ErrorReport) -> ErrorResponse:
+    """Send error report to ErrorBrain.
 
-## 🤝 Contributing
+    Args:
+        report: Error report to send.
 
-Pull Requests sind willkommen! Für größere Änderungen, öffne bitte zuerst ein Issue.
+    Returns:
+        Error response with ID and explanation.
+    """
+```
 
-## 📄 License
+**Go (Godoc):**
 
-MIT - Siehe [LICENSE](./LICENSE)
+```go
+// SendError sends an error report to ErrorBrain.
+func (c *Client) SendError(ctx context.Context, report *ErrorReport) (*ErrorResponse, error) {
+```
+
+**Rust:**
+
+```rust
+/// Send error report to ErrorBrain.
+///
+/// # Arguments
+/// * `report` - Error report to send
+pub async fn send_error(&self, report: &ErrorReport) -> Result<ErrorResponse> {
+```
+
+**C++:**
+
+```cpp
+/// Send error report to ErrorBrain.
+/// \param report Error report to send
+ErrorResponse send_error(const ErrorReport& report) const;
+```
+
+## 🧪 Testing
+
+```bash
+# Alle Tests
+./run-tests.sh
+# oder
+make test
+# oder
+task test-all
+
+# Spezifische SDKs
+task test-python
+task test-rust
+task test-cpp
+task test-typescript
+task test-deno
+```
 
 ## 🔗 Links
 
-- [LM Studio](https://lmstudio.ai/)
-- [Obsidian](https://obsidian.md/)
-- [FastAPI](https://fastapi.tiangolo.com/)
+- **GitHub**: https://github.com/afeldman/errorbrain
+- **Issues**: https://github.com/afeldman/errorbrain/issues
+- **LM Studio**: https://lmstudio.ai/
+- **Obsidian**: https://obsidian.md/
+
+## 📝 License
+
+MIT - Siehe [LICENSE](./LICENSE)

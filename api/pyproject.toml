@@ -21,6 +21,7 @@ dev = [
   "mypy>=1.7.0",
   "sphinx>=7.2.0",
   "sphinx-rtd-theme>=2.0.0",
+  "typer[all]>=0.9.0",
 ]
 
 [tool.uv]
@@ -28,8 +29,7 @@ python-preference = "managed"
 package = true
 
 [project.scripts]
-errorbrain-server = "errorbrain_server.main:run"
-errorbrain-server-dev = "errorbrain_server.main:run_dev"
+errorbrain-server = "errorbrain_server.cli:main"
 
 # Ruff configuration
 [tool.ruff]

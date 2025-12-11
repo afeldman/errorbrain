@@ -1,99 +1,115 @@
-# Binaries for programs and plugins
-*.exe
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with FAIL	github.com/errorbrain/sdk-go [setup failed]
-*.test
-
-# Output of the go toolchain
-*.out
-
-# Dependency directories (remove the 'vendor' directory when publishing but not if it's meant to be versioned)
-# vendor/
-
-# Go workspace file
-go.work
-
-# IDEs and editors
-.idea/        # IntelliJ IDEA
-.vscode/      # VS Code
-*.iml         # IntelliJ IDEA module files
-.DS_Store     # macOS
-Thumbs.db     # Windows
-
-# Environment variables
-.env
-.env.*
-.venv/        # Python virtual environment
-venv/         # Python virtual environment
-
-# Python artifacts
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.o
+*.py[cod]
+*$py.class
 *.so
+
+# Distribution / packaging
 .Python
-
-# Python build and distribution
 build/
+develop-eggs/
 dist/
-*.egg-info/
-*.egg
+downloads/
+eggs/
 .eggs/
+lib/
+lib64/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Python testing and coverage
-.pytest_cache/
-.coverage
-.coverage.*
+# Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
 
-# Python type checking and linting
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.ruff_cache/
-.pytype/
-
-# Python virtual environments
-.venv/
-venv/
+# Environments
+.env
+.venv
 env/
+venv/
 ENV/
+env.bak/
+venv.bak/
 
-# uv (Python package manager)
-.uv/
-uv.lock
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Go build artifacts
+# Go
+*.exe
 *.test
 *.out
+vendor/
+go.work
 
-# Terraform
-*.tfstate
-*.tfstate.*
-terraform-errorbrain
-.terraform/
-.terraform.lock.hcl
+# TypeScript / JavaScript
+node_modules/
+dist/
+.next/
+out/
+*.d.ts
+*.js.map
+*.tsbuildinfo
+.eslintcache
 
-# Log files
-*.log
-log/
+# Deno
+.deno/
+deno.lock
 
-# Sphinx documentation
+# Rust
+/target/
+Cargo.lock
+**/*.rs.bk
+.cargo/
+
+# C++
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.o
+*.a
+*.lib
+*.dll
+*.dylib
+
+# Conan
+.conan/
+.conan2/
+conaninfo.txt
+conanbuildinfo.cmake
+conan.lock
+
+# Documentation
 docs/_build/
-api/docs/_build/
-sdk-python/docs/_build/
-*.doctree
+docs/cpp/
+site/
 
-# Pre-commit
-.pre-commit-cache/
+# Test coverage
+htmlcov/
 
+# CI/CD
+.github/workflows/cache/
+
+# Misc
+.directory
+.nfs*
+*.pyc
+*.log
+Thumbs.db
+.AppleDouble
+.LSOverride

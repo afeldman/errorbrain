@@ -31,7 +31,8 @@ LLM_API_KEY = config("ERRORBRAIN_LLM_API_KEY", default="lm-studio")
 # Obsidian / Second Brain Configuration
 OBSIDIAN_ENABLED: bool = config("ERRORBRAIN_OBSIDIAN_ENABLED", default="true").lower() == "true"
 OBSIDIAN_PATH = Path(
-    config("ERRORBRAIN_OBSIDIAN_PATH", default="/Users/anton.feldmann/lynq/errors")
+    config("ERRORBRAIN_OBSIDIAN_PATH", 
+           default=str(Path.home() / ".errorbrain" / "errors"))
 ).expanduser()
 if OBSIDIAN_ENABLED:
     OBSIDIAN_PATH.mkdir(parents=True, exist_ok=True)
@@ -283,19 +284,31 @@ def create_error(report: ErrorReport) -> ErrorResponse:
 
 
 # ============================================================
-# Server Entry Points
+# Server Entry Points (for backward compatibility)
 # ============================================================
+
+# NOTE: For CLI usage, see cli.py and use:
+#   errorbrain-server dev     # Development server
+#   errorbrain-server run     # Production server
+#   errorbrain-server health  # Health check
+#   errorbrain-server config  # Show configuration
 
 
 def run_dev() -> None:
-    """Run development server with auto-reload."""
+    """Run development server with auto-reload.
+
+    Deprecated: Use 'errorbrain-server dev' from CLI instead.
+    """
     import uvicorn
 
     uvicorn.run("errorbrain_server.main:app", host="127.0.0.1", port=8000, reload=True)
 
 
 def run() -> None:
-    """Run production server."""
+    """Run production server.
+
+    Deprecated: Use 'errorbrain-server run' from CLI instead.
+    """
     import uvicorn
 
     uvicorn.run("errorbrain_server.main:app", host="0.0.0.0", port=8000, reload=False)

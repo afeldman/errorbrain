@@ -1,0 +1,179 @@
+name: Test All SDKs
+
+on:
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
+
+jobs:
+    test-python:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: ["3.9", "3.10", "3.11", "3.12"]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v4
+              with:
+                  python-version: ${{ matrix.python-version }}
+
+            - name: Install uv
+              run: pip install uv
+
+            - name: Install dependencies
+              run: cd api && uv sync --all-extras
+
+            - name: Run tests
+              run: cd api && uv run pytest tests/ -v --cov=src --cov-report=xml
+
+            - name: Upload coverage
+              uses: codecov/codecov-action@v3
+              with:
+                  files: ./api/coverage.xml
+
+    test-go:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                go-version: ["1.20", "1.21", "1.22"]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Go ${{ matrix.go-version }}
+              uses: actions/setup-go@v4
+              with:
+                  go-version: ${{ matrix.go-version }}
+
+            - name: Run tests
+              run: |
+                  cd sdk-go && go test -v -race ./...
+                  cd ../terraform-provider && go test -v ./...
+
+    test-rust:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Run tests
+              run: cd sdk-rust && cargo test --verbose
+
+            - name: Check fmt
+              run: cd sdk-rust && cargo fmt --check
+
+            - name: Clippy
+              run: cd sdk-rust && cargo clippy -- -D warnings
+
+    test-typescript:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: ["16.x", "18.x", "20.x"]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Install dependencies
+              run: cd sdk-typescript && npm ci
+
+            - name: Run tests
+              run: cd sdk-typescript && npm test
+
+            - name: Check lint
+              run: cd sdk-typescript && npm run lint
+
+    test-deno:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Deno
+              uses: denoland/setup-deno@v1
+              with:
+                  deno-version: vx.x.x
+
+            - name: Run tests
+              run: cd sdk-deno && deno test --allow-net tests/
+
+    test-cpp:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y cmake g++ libcurl4-openssl-dev
+                  pip install conan
+
+            - name: Build
+              run: |
+                  cd sdk-cpp
+                  mkdir -p build
+                  cd build
+                  conan install .. --build=missing
+                  cmake ..
+                  cmake --build .
+
+            - name: Run tests
+              run: cd sdk-cpp/build && ctest --output-on-failure
+
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.11"
+
+            - name: Install linters
+              run: |
+                  pip install uv
+                  pip install pylint black mypy
+
+            - name: Lint Python
+              run: |
+                  cd api && python -m pylint src/ || true
+                  cd api && python -m black --check src/ || true
+
+            - name: Check Python types
+              run: cd api && python -m mypy src/ || true
+
+    docs:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.11"
+
+            - name: Install Sphinx
+              run: pip install sphinx sphinx-rtd-theme sphinxcontrib-spelling
+
+            - name: Install Doxygen
+              run: sudo apt-get install -y doxygen
+
+            - name: Build Python docs
+              run: cd docs && sphinx-build -b html . _build/html
+
+            - name: Build C++ docs
+              run: doxygen docs/Doxyfile.cpp
+
+            - name: Upload docs
+              uses: actions/upload-artifact@v3
+              with:
+                  name: documentation
+                  path: docs/_build/html
