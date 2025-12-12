@@ -148,10 +148,11 @@ impl ErrorBrainClient {
             })?;
 
         if !response.status().is_success() {
+            let status = response.status().as_u16();
             let text = response.text().await.unwrap_or_default();
-            error!("Error API returned {}: {}", response.status(), text);
+            error!("Error API returned {}: {}", status, text);
             return Err(ErrorBrainError::RequestFailed(
-                response.status().as_u16(),
+                status,
                 text,
             ));
         }
