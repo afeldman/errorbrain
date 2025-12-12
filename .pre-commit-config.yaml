@@ -48,7 +48,7 @@ repos:
 
   # Go - linting
   - repo: https://github.com/golangci/golangci-lint
-    rev: v1.56.2
+    rev: v1.62.0
     hooks:
       - id: golangci-lint
         files: ^sdk-go/

@@ -31,8 +31,7 @@ LLM_API_KEY = config("ERRORBRAIN_LLM_API_KEY", default="lm-studio")
 # Obsidian / Second Brain Configuration
 OBSIDIAN_ENABLED: bool = config("ERRORBRAIN_OBSIDIAN_ENABLED", default="true").lower() == "true"
 OBSIDIAN_PATH = Path(
-    config("ERRORBRAIN_OBSIDIAN_PATH", 
-           default=str(Path.home() / ".errorbrain" / "errors"))
+    config("ERRORBRAIN_OBSIDIAN_PATH", default=str(Path.home() / "obsidian" / "errorbrain"))
 ).expanduser()
 if OBSIDIAN_ENABLED:
     OBSIDIAN_PATH.mkdir(parents=True, exist_ok=True)
