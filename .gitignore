@@ -113,3 +113,5 @@ htmlcov/
 Thumbs.db
 .AppleDouble
 .LSOverride
+
+target/
