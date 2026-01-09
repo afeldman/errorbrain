@@ -90,5 +90,5 @@ def verdict_to_template_context(verdict: SpecVerdict | dict) -> dict[str, Any]:
             for action in verdict.recommended_actions
         ],
         "evidence_refs": verdict.evidence_refs,
-        "created_at": verdict.created_at,
+        "created_at": verdict.created_at.strftime("%Y-%m-%d %H:%M:%S"),
     }

@@ -14,6 +14,7 @@ This module is a pure adapter layer:
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 from typing import Any
@@ -125,19 +126,30 @@ class ObsidianExporter:
 
 def export_verdict_cli(
     verdict_json_path: str,
-    vault_path: str | None = None,
+    vault_path: str,
     template: str = "verdict.md.j2",
 ) -> None:
     """CLI entry point for exporting a verdict.
 
     Args:
         verdict_json_path: Path to verdict.json.
-        vault_path: Path to Obsidian vault. Defaults to ~/Obsidian/errorbrain.
+        vault_path: Path to Obsidian vault.
         template: Template name (default: verdict.md.j2).
     """
-    if vault_path is None:
-        vault_path = str(Path.home() / "Obsidian" / "errorbrain")
-
     exporter = ObsidianExporter(vault_path)
     output_path = exporter.export_from_file(verdict_json_path, template_name=template)
     print(f"✓ Exported to: {output_path}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Export an ErrorBrain verdict to an Obsidian note.")
+    parser.add_argument("verdict_json_path", type=str, help="Path to the verdict.json file.")
+    parser.add_argument("--vault-path", type=str, required=True, help="Path to the Obsidian vault directory.")
+    parser.add_argument("--template", type=str, default="verdict.md.j2", help="Name of the template file to use.")
+
+    args = parser.parse_args()
+
+    export_verdict_cli(
+        verdict_json_path=args.verdict_json_path,
+        vault_path=args.vault_path,
+        template=args.template,
+    )

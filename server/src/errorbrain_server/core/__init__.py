@@ -10,7 +10,7 @@ from errorbrain_server.core.models import (
     Source,
     Verdict,
 )
-from errorbrain_server.core.reasoning import analyze
+from errorbrain_server.core.reasoning.engine import analyze
 
 __all__ = [
     "ingest",

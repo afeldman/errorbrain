@@ -6,7 +6,7 @@ For production, replace with database backend.
 from __future__ import annotations
 
 from errorbrain_server.core.models import ErrorEvent, Verdict
-from errorbrain_server.core.reasoning import analyze
+from errorbrain_server.core import analyze
 from errorbrain_server.ports.base import IngestPort, QueryPort
 
 

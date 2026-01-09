@@ -1,27 +1,17 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    container_name: errorbrain-api
+  errorbrain:
+    image: errorbrain:latest
+    container_name: errorbrain
     ports:
-      - "8000:8000"
+      - "8080:8080"
     environment:
-      ERRORBRAIN_APP_NAME: "errorbrain-server"
-      ERRORBRAIN_LLM_PROVIDER: ${ERRORBRAIN_LLM_PROVIDER:-openai}
-      ERRORBRAIN_LLM_MODEL: ${ERRORBRAIN_LLM_MODEL:-local-model}
-      ERRORBRAIN_LLM_BASE_URL: ${ERRORBRAIN_LLM_BASE_URL:-http://host.docker.internal:1234/v1}
-      ERRORBRAIN_LLM_API_KEY: ${ERRORBRAIN_LLM_API_KEY:-lm-studio}
-      ERRORBRAIN_OBSIDIAN_ENABLED: ${ERRORBRAIN_OBSIDIAN_ENABLED:-true}
-      ERRORBRAIN_OBSIDIAN_PATH: /Obsidian
+      PORT: 8080
+      LOG_LEVEL: info
+      ERRORBRAIN_REASONING_MODE: rules
     volumes:
-      - ${OBSIDIAN_VAULT_PATH:-./.obsidian}:/Obsidian
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
+      # Output-Verzeichnis für Obsidian-Markdown (Second Brain)
+      # Dieses Volume wird vom Host bereitgestellt und ist KEIN Bestandteil des Docker-Images.
+      - ./obsidian-vault:/data/obsidian
     restart: unless-stopped

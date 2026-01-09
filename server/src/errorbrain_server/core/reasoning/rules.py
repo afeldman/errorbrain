@@ -1,7 +1,7 @@
-"""Core reasoning engine for verdict generation.
+"""Core reasoning engine for verdict generation - Deterministic Rules.
 
 This module contains the deterministic rules and heuristics that
-transform an ErrorEvent into a Verdict, independent of HTTP or framework.
+transform an ErrorEvent into a Verdict.
 """
 
 from __future__ import annotations
@@ -89,11 +89,10 @@ def _build_evidence_refs(event: ErrorEvent) -> list[str]:
     return [f"{event.id}#e{idx}" for idx, _ in enumerate(event.evidence)]
 
 
-def analyze(event: ErrorEvent) -> Verdict:
-    """Core reasoning: transform ErrorEvent into Verdict.
+def analyze_by_rules(event: ErrorEvent) -> Verdict:
+    """Core reasoning: transform ErrorEvent into Verdict using deterministic rules.
 
-    This is the heart of the system. It applies deterministic rules
-    to produce a Verdict without any HTTP or framework context.
+    This is the heart of the deterministic rule-based system.
 
     Args:
         event: The normalized error event.
