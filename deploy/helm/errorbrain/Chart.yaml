@@ -1,0 +1,15 @@
+apiVersion: v2
+name: errorbrain
+version: 0.1.0
+description: A Helm chart for deploying ErrorBrain
+appVersion: "1.0.0"
+keywords:
+  - errorbrain
+  - ai
+  - debugging
+  - reasoning
+home: https://github.com/afeldman/errorbrain
+maintainers:
+  - name: Anton Feldmann
+    email: anton.feldmann@example.com
+license: Apache-2.0

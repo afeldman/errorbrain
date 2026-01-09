@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "errorbrain.fullname" . }}
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: {{ include "errorbrain.fullname" . }}
+    labels:
+      app: {{ include "errorbrain.name" . }}
+  spec:
+    replicas: {{ .Values.replicaCount }}
+    selector:
+      matchLabels:
+        app: {{ include "errorbrain.name" . }}
+    template:
+      metadata:
+        labels:
+          app: {{ include "errorbrain.name" . }}
+      spec:
+        containers:
+          - name: errorbrain
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            ports:
+              - containerPort: 8080
+            env:
+              - name: ERRORBRAIN_REASONING_MODE
+                value: {{ .Values.env.ERRORBRAIN_REASONING_MODE | quote }}
+              {{- if .Values.env.LLM_HOST }}
+              - name: LLM_HOST
+                value: {{ .Values.env.LLM_HOST | quote }}
+              {{- end }}
+              {{- if .Values.env.LLM_MODEL }}
+              - name: LLM_MODEL
+                value: {{ .Values.env.LLM_MODEL | quote }}
+              {{- end }}
+              {{- if .Values.env.LLM_KEY }}
+              - name: LLM_KEY
+                value: {{ .Values.env.LLM_KEY | quote }}
+              {{- end }}
+            volumeMounts:
+              {{- if .Values.persistence.enabled }}
+              - name: obsidian-data
+                mountPath: {{ .Values.persistence.mountPath }}
+              {{- end }}
+        volumes:
+          {{- if .Values.persistence.enabled }}
+          - name: obsidian-data
+            persistentVolumeClaim:
+              claimName: {{ include "errorbrain.fullname" . }}-pvc
+          {{- end }}
