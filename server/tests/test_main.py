@@ -1,103 +1,89 @@
-"""Tests for ErrorBrain Server API."""
+"""Tests for the verdict-focused ErrorBrain server."""
 
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 
-from errorbrain_server.main import app, build_error_prompt
-from errorbrain_server.main import ErrorReport
+from errorbrain_server.api.spec_models import SpecExplainResponse, SpecVerdict
+from errorbrain_server.main import app
 
 
 @pytest.fixture
 def client() -> TestClient:
-    """Create a test client for the API.
-
-    Returns:
-        FastAPI test client.
-    """
     return TestClient(app)
 
 
-def test_healthz(client: TestClient) -> None:
-    """Test health check endpoint.
+def _sample_event() -> dict:
+    return {
+        "id": str(uuid4()),
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "source": {"language": "python", "name": "svc-api", "tags": ["prod"]},
+        "message": "Timeout while calling payment provider",
+        "severity": "error",
+        "metadata": {"component": "payment"},
+        "evidence": [
+            {"type": "log_line", "data": {"line": "failed to connect"}},
+        ],
+    }
 
-    Args:
-        client: FastAPI test client.
-    """
+
+def test_healthz(client: TestClient) -> None:
     response = client.get("/healthz")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
-    assert "llm_provider" in data
-    assert "obsidian_enabled" in data
+    assert "spec_version" in data
 
 
-def test_build_error_prompt() -> None:
-    """Test error prompt building."""
-    report = ErrorReport(
-        language="python",
-        project="test-service",
-        message="Test error",
-        traceback="Line 1\nLine 2",
-        tags=["test", "prod"],
-        metadata={"user_id": "123"},
-    )
+def test_ingest_event_returns_verdict(client: TestClient) -> None:
+    payload = _sample_event()
 
-    prompt = build_error_prompt(report)
+    response = client.post("/events", json=payload)
+    assert response.status_code == 200
 
-    assert "python" in prompt
-    assert "test-service" in prompt
-    assert "Test error" in prompt
-    assert "Line 1" in prompt
-    assert "test, prod" in prompt
+    verdict = SpecVerdict.model_validate(response.json())
+    assert verdict.event_id == payload["id"]
+    assert verdict.impact.severity == "critical"
+    assert verdict.hypothesis.confidence > 0
+    assert verdict.evidence_refs == [f"{payload['id']}#e0"]
 
 
-def test_error_report_validation() -> None:
-    """Test ErrorReport model validation."""
-    # Valid report
-    report = ErrorReport(
-        language="go",
-        project="payment-service",
-        message="Connection failed",
-    )
-    assert report.language == "go"
-    assert report.tags == []
-    assert report.store_in_vault is True
+def test_analysis_endpoint_returns_existing_verdict(client: TestClient) -> None:
+    payload = _sample_event()
+    post_resp = client.post("/events", json=payload)
+    assert post_resp.status_code == 200
 
-    # Missing required fields should fail
-    with pytest.raises(Exception):
-        ErrorReport(language="python")  # type: ignore
+    get_resp = client.get(f"/analysis/{payload['id']}")
+    assert get_resp.status_code == 200
+    assert get_resp.json()["event_id"] == payload["id"]
 
 
-@pytest.mark.asyncio
-async def test_create_error_endpoint_structure(client: TestClient) -> None:
-    """Test error creation endpoint structure (without actual LLM call).
+def test_explain_endpoint_uses_verdict(client: TestClient) -> None:
+    payload = _sample_event()
+    post_resp = client.post("/events", json=payload)
+    verdict = SpecVerdict.model_validate(post_resp.json())
 
-    Args:
-        client: FastAPI test client.
-    """
-    payload = {
-        "language": "python",
-        "project": "test-project",
-        "message": "Test error message",
-        "traceback": "Traceback...",
-        "tags": ["test"],
-        "store_in_vault": False,  # Don't actually save during tests
+    explain_resp = client.get(f"/explain/{payload['id']}")
+    assert explain_resp.status_code == 200
+
+    explain = SpecExplainResponse.model_validate(explain_resp.json())
+    assert explain.event_id == payload["id"]
+    assert verdict.hypothesis.title.split()[0] in explain.summary
+    assert explain.actions
+
+
+def test_invalid_event_rejected(client: TestClient) -> None:
+    bad_payload = {
+        "id": "not-a-uuid",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "source": {"language": "python", "name": "svc-api"},
+        "message": "oops",
     }
 
-    # Note: This will fail without a real LLM, but tests the structure
-    response = client.post("/v1/errors", json=payload)
-
-    # We expect either 200 (success) or 502 (LLM failure)
-    assert response.status_code in [200, 502]
-
-    if response.status_code == 200:
-        data = response.json()
-        assert "id" in data
-        assert "explanation" in data
-        assert data["project"] == "test-project"
-        assert data["language"] == "python"
+    response = client.post("/events", json=bad_payload)
+    # FastAPI returns 422 for Pydantic validation errors (not 400)
+    assert response.status_code == 422

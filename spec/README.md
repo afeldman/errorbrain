@@ -7,6 +7,7 @@
 - **error_event.schema.json** - Complete error event format with source and evidence
 - **source.schema.json** - Application/service metadata
 - **evidence.schema.json** - Additional context items (logs, metrics, HTTP, etc.)
+- **verdict.schema.json** - Canonical analysis result (hypothesis, impact, actions)
 
 ## Version Management
 

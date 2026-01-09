@@ -1,10 +1,19 @@
-import os
+from __future__ import annotations
+
+from datetime import datetime
 from typing import Any, Dict
+from uuid import uuid4
 
 import pytest
 import requests
 
-from errorbrain.client import ErrorBrainClient, ErrorReport
+from errorbrain.client import (
+    ErrorBrainClient,
+    ErrorEvent,
+    ExplainResponse,
+    Source,
+    Verdict,
+)
 
 
 class StubResponse:
@@ -20,114 +29,118 @@ class StubResponse:
             raise requests.HTTPError(f"status {self.status_code}")
 
 
-def test_health_check_uses_base_url(monkeypatch: pytest.MonkeyPatch) -> None:
-    captured: Dict[str, Any] = {}
+def _sample_verdict(event_id: str) -> Dict[str, Any]:
+    return {
+        "id": str(uuid4()),
+        "event_id": event_id,
+        "hypothesis": {
+            "title": "Issue observed",
+            "description": "Something happened",
+            "confidence": 0.7,
+        },
+        "impact": {
+            "severity": "warning",
+            "affected_components": ["svc"],
+        },
+        "recommended_actions": [
+            {"title": "Check logs", "description": "Inspect logs", "urgency": "medium"}
+        ],
+        "evidence_refs": [],
+        "created_at": datetime.utcnow().isoformat() + "Z",
+    }
 
-    def fake_get(url: str, timeout: int) -> StubResponse:
-        captured["url"] = url
-        captured["timeout"] = timeout
-        return StubResponse(200, {"status": "ok", "llm_configured": True})
+
+def _sample_event(event_id: str) -> ErrorEvent:
+    return ErrorEvent(
+        id=event_id,
+        timestamp=datetime.utcnow().isoformat() + "Z",
+        source=Source(language="python", name="svc"),
+        message="boom",
+        severity="error",
+    )
+
+
+def test_health_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fake_get(url: str, timeout: int) -> StubResponse:  # type: ignore[override]
+        return StubResponse(200, {"status": "ok"})
 
     monkeypatch.setattr("errorbrain.client.requests.get", fake_get)
-
     client = ErrorBrainClient(base_url="http://example.com/api")
+
     result = client.health_check()
-
     assert result["status"] == "ok"
-    assert captured["url"] == "http://example.com/api/healthz"
-    assert captured["timeout"] == 5
 
 
-def test_send_error_builds_payload(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_verdict_uses_analysis_endpoint(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: Dict[str, Any] = {}
+    event_id = str(uuid4())
+
+    def fake_get(url: str, timeout: int) -> StubResponse:  # type: ignore[override]
+        captured["url"] = url
+        return StubResponse(200, _sample_verdict(event_id))
+
+    monkeypatch.setattr("errorbrain.client.requests.get", fake_get)
+    client = ErrorBrainClient(base_url="http://example.com")
+
+    verdict = client.get_verdict(event_id)
+
+    assert captured["url"] == f"http://example.com/analysis/{event_id}"
+    assert verdict.event_id == event_id
+
+
+def test_submit_event_builds_payload(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: Dict[str, Any] = {}
+    event = _sample_event(str(uuid4()))
 
     def fake_post(url: str, json: Dict[str, Any], timeout: int) -> StubResponse:  # type: ignore[override]
         captured["url"] = url
         captured["json"] = json
-        captured["timeout"] = timeout
-        return StubResponse(200, {
-            "id": "abc-123",
-            "project": json["project"],
-            "language": json["language"],
-            "tags": json.get("tags", []),
-            "created_at": "2024-01-01T00:00:00Z",
-            "explanation": "ok",
-            "saved_path": None,
-        })
+        return StubResponse(200, _sample_verdict(event.id))
 
     monkeypatch.setattr("errorbrain.client.requests.post", fake_post)
-
     client = ErrorBrainClient(base_url="http://example.com")
-    response = client.send_error(
-        language="python",
-        project="svc",
-        message="boom",
-        traceback="trace",
-        tags=["prod"],
-        metadata={"k": "v"},
-        store_in_vault=False,
-    )
 
-    assert captured["url"] == "http://example.com/v1/errors"
-    assert captured["json"]["language"] == "python"
-    assert captured["json"]["project"] == "svc"
-    assert captured["json"]["traceback"] == "trace"
-    assert captured["json"]["tags"] == ["prod"]
-    assert captured["json"]["metadata"] == {"k": "v"}
-    assert captured["json"]["store_in_vault"] is False
-    assert response.id == "abc-123"
+    verdict = client.submit_event(event)
+
+    assert captured["url"] == "http://example.com/events"
+    assert captured["json"]["id"] == event.id
+    assert verdict.event_id == event.id
 
 
-def test_send_exception_formats_traceback(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_explain_parses_response(monkeypatch: pytest.MonkeyPatch) -> None:
+    event_id = str(uuid4())
     captured: Dict[str, Any] = {}
 
-    def fake_post(url: str, json: Dict[str, Any], timeout: int) -> StubResponse:  # type: ignore[override]
-        captured["json"] = json
-        return StubResponse(200, {
-            "id": "abc-123",
-            "project": json["project"],
-            "language": json["language"],
-            "tags": json.get("tags", []),
-            "created_at": "2024-01-01T00:00:00Z",
-            "explanation": "ok",
-            "saved_path": None,
-        })
+    def fake_get(url: str, timeout: int) -> StubResponse:  # type: ignore[override]
+        captured["url"] = url
+        payload = {
+            "event_id": event_id,
+            "verdict_id": str(uuid4()),
+            "summary": "Issue observed",
+            "details": "Something happened",
+            "actions": ["do X"],
+        }
+        return StubResponse(200, payload)
 
-    monkeypatch.setattr("errorbrain.client.requests.post", fake_post)
-
+    monkeypatch.setattr("errorbrain.client.requests.get", fake_get)
     client = ErrorBrainClient(base_url="http://example.com")
 
-    # We need to ensure the traceback is captured; raise inside a helper to make deterministic
-    try:
-        raise ValueError("example")
-    except ValueError as exc:
-        _ = client.send_exception(exc, project="svc")
+    explanation = client.explain(event_id)
 
-    assert "ValueError" in captured["json"]["traceback"]
-    assert captured["json"]["message"] == "example"
+    assert isinstance(explanation, ExplainResponse)
+    assert captured["url"] == f"http://example.com/explain/{event_id}"
 
 
-def test_env_base_url_is_used(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("ERRORBRAIN_API_URL", "http://env-url.local/")
+def test_env_base_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ERRORBRAIN_API_URL", "http://env-url")
     client = ErrorBrainClient()
-    assert client.base_url == "http://env-url.local"
+    assert client.base_url == "http://env-url"
 
 
 @pytest.mark.asyncio
-async def test_send_error_async_builds_payload(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_get_verdict_async(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: Dict[str, Any] = {}
-
-    class FakeResponse:
-        def __init__(self, status_code: int, payload: Dict[str, Any]):
-            self.status_code = status_code
-            self._payload = payload
-
-        def json(self) -> Dict[str, Any]:
-            return self._payload
-
-        def raise_for_status(self) -> None:
-            if self.status_code >= 400:
-                raise requests.HTTPError(f"status {self.status_code}")
+    event_id = str(uuid4())
 
     class FakeAsyncClient:
         def __init__(self, *args: Any, **kwargs: Any):
@@ -139,100 +152,24 @@ async def test_send_error_async_builds_payload(monkeypatch: pytest.MonkeyPatch) 
         async def __aexit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
             return None
 
-        async def post(self, url: str, json: Dict[str, Any]):  # type: ignore[override]
+        async def get(self, url: str):  # type: ignore[override]
             captured["url"] = url
-            captured["json"] = json
-            return FakeResponse(200, {
-                "id": "xyz",
-                "project": json["project"],
-                "language": json["language"],
-                "tags": json.get("tags", []),
-                "created_at": "2024-01-01T00:00:00Z",
-                "explanation": "ok",
-                "saved_path": None,
-            })
+
+            class Resp:
+                status_code = 200
+
+                def raise_for_status(self) -> None:
+                    return None
+
+                def json(self) -> Dict[str, Any]:
+                    return _sample_verdict(event_id)
+
+            return Resp()
 
     monkeypatch.setattr("errorbrain.client.httpx.AsyncClient", FakeAsyncClient)
-
-    client = ErrorBrainClient(base_url="http://example.com")
-    response = await client.send_error_async(
-        language="python",
-        project="svc",
-        message="boom",
-        traceback="trace",
-        tags=["prod"],
-        metadata={"k": "v"},
-        store_in_vault=False,
-    )
-
-    assert captured["url"] == "http://example.com/v1/errors"
-    assert captured["json"]["language"] == "python"
-    assert captured["json"]["project"] == "svc"
-    assert captured["json"]["traceback"] == "trace"
-    assert captured["json"]["tags"] == ["prod"]
-    assert captured["json"]["metadata"] == {"k": "v"}
-    assert captured["json"]["store_in_vault"] is False
-    assert response.id == "xyz"
-
-
-@pytest.mark.asyncio
-async def test_send_exception_async_formats_traceback(monkeypatch: pytest.MonkeyPatch) -> None:
-    captured: Dict[str, Any] = {}
-
-    class FakeResponse:
-        def __init__(self, status_code: int, payload: Dict[str, Any]):
-            self.status_code = status_code
-            self._payload = payload
-
-        def json(self) -> Dict[str, Any]:
-            return self._payload
-
-        def raise_for_status(self) -> None:
-            if self.status_code >= 400:
-                raise requests.HTTPError(f"status {self.status_code}")
-
-    class FakeAsyncClient:
-        def __init__(self, *args: Any, **kwargs: Any):
-            captured["init_kwargs"] = kwargs
-
-        async def __aenter__(self) -> "FakeAsyncClient":
-            return self
-
-        async def __aexit__(self, exc_type, exc, tb) -> None:  # type: ignore[override]
-            return None
-
-        async def post(self, url: str, json: Dict[str, Any]):  # type: ignore[override]
-            captured["json"] = json
-            return FakeResponse(200, {
-                "id": "xyz",
-                "project": json["project"],
-                "language": json["language"],
-                "tags": json.get("tags", []),
-                "created_at": "2024-01-01T00:00:00Z",
-                "explanation": "ok",
-                "saved_path": None,
-            })
-
-    monkeypatch.setattr("errorbrain.client.httpx.AsyncClient", FakeAsyncClient)
-
     client = ErrorBrainClient(base_url="http://example.com")
 
-    try:
-        raise ValueError("example")
-    except ValueError as exc:
-        _ = await client.send_exception_async(exc, project="svc")
+    verdict = await client.get_verdict_async(event_id)
 
-    assert "ValueError" in captured["json"]["traceback"]
-    assert captured["json"]["message"] == "example"
-
-
-def test_http_errors_propagate(monkeypatch: pytest.MonkeyPatch) -> None:
-    def fake_post(url: str, json: Dict[str, Any], timeout: int) -> StubResponse:  # type: ignore[override]
-        return StubResponse(500, {"error": "fail"})
-
-    monkeypatch.setattr("errorbrain.client.requests.post", fake_post)
-
-    client = ErrorBrainClient(base_url="http://example.com")
-
-    with pytest.raises(requests.HTTPError):
-        _ = client.send_error(language="python", project="svc", message="fail")
+    assert captured["url"] == f"http://example.com/analysis/{event_id}"
+    assert isinstance(verdict, Verdict)

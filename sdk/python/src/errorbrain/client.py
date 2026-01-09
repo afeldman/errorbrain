@@ -1,8 +1,10 @@
-"""ErrorBrain Python SDK - Client for error tracking API.
+"""ErrorBrain Python SDK - spec-first client.
 
-This module provides a client for communicating with the ErrorBrain API
-to submit errors for AI analysis and storage in Obsidian vault, using
-spec/v1/error_event.schema.json payloads.
+Provides thin, typed access to the ErrorBrain server for:
+- Health checks
+- Verdict retrieval (/analysis)
+- Explanation retrieval (/explain)
+- Optional event submission (/events) using spec/v1/error_event
 """
 
 from __future__ import annotations
@@ -12,248 +14,152 @@ from typing import Any
 
 import httpx
 import requests
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class ErrorReport(BaseModel):
-    """Error report model matching the API schema.
+class Source(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
-    Attributes:
-        language: Programming language (e.g., python, go, terraform).
-        project: Project or service name.
-        message: Error message or exception message.
-        traceback: Optional stack trace.
-        tags: List of tags for categorization (e.g., ['prod', 'cron']).
-        metadata: Additional metadata dictionary.
-        store_in_vault: Whether to save to Obsidian vault.
-    """
-
-    language: str = Field(..., description="Programming language")
-    project: str = Field(..., description="Project/service name")
-    message: str = Field(..., description="Error message")
-    traceback: str | None = Field(None, description="Optional stack trace")
-    tags: list[str] = Field(default_factory=list, description="Tags for categorization")
-    metadata: dict[str, Any] | None = Field(None, description="Additional metadata")
-    store_in_vault: bool = Field(True, description="Save to Obsidian vault")
+    language: str
+    name: str
+    version: str | None = None
+    environment: str | None = None
+    hostname: str | None = None
+    tags: list[str] = Field(default_factory=list)
 
 
-class ErrorResponse(BaseModel):
-    """Response from the ErrorBrain API.
+class Evidence(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
-    Attributes:
-        id: Unique error identifier.
-        project: Project name.
-        language: Programming language.
-        tags: List of tags.
-        created_at: Timestamp of error creation.
-        explanation: AI-generated explanation.
-        saved_path: Path where error was saved (if applicable).
-    """
+    type: str
+    data: dict[str, Any]
+    timestamp: str | None = None
+
+
+class ErrorEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
     id: str
-    project: str
-    language: str
-    tags: list[str]
+    timestamp: str
+    source: Source
+    message: str
+    stack_trace: str | None = None
+    error_type: str | None = None
+    severity: str | None = None
+    metadata: dict[str, Any] | None = None
+    evidence: list[Evidence] | None = None
+
+
+class Hypothesis(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str
+    description: str
+    confidence: float
+
+
+class Impact(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    severity: str
+    affected_components: list[str]
+
+
+class RecommendedAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str
+    description: str
+    urgency: str
+
+
+class Verdict(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    event_id: str
+    hypothesis: Hypothesis
+    impact: Impact
+    recommended_actions: list[RecommendedAction]
+    evidence_refs: list[str]
     created_at: str
-    explanation: str
-    saved_path: str | None
+
+
+class ExplainResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    event_id: str
+    verdict_id: str
+    summary: str
+    details: str
+    actions: list[str]
 
 
 class ErrorBrainClient:
-    """Client for communicating with the ErrorBrain API.
-
-    Attributes:
-        base_url: The base URL of the ErrorBrain API server.
-    """
+    """Thin HTTP client for the ErrorBrain API (spec/v1)."""
 
     def __init__(self, base_url: str | None = None) -> None:
-        """Initialize the ErrorBrain client.
-
-        Args:
-            base_url: Base URL of the ErrorBrain API.
-                Defaults to ERRORBRAIN_API_URL env var or http://localhost:8000.
-        """
         self.base_url = (
             base_url or os.getenv("ERRORBRAIN_API_URL", "http://localhost:8000")
         ).rstrip("/")
 
-    def _build_report(
-        self,
-        *,
-        language: str,
-        project: str,
-        message: str,
-        traceback: str | None,
-        tags: list[str] | None,
-        metadata: dict[str, Any] | None,
-        store_in_vault: bool,
-    ) -> ErrorReport:
-        return ErrorReport(
-            language=language,
-            project=project,
-            message=message,
-            traceback=traceback,
-            tags=tags or [],
-            metadata=metadata,
-            store_in_vault=store_in_vault,
-        )
-
     def health_check(self) -> dict[str, Any]:
-        """Check if the API is healthy.
-
-        Returns:
-            Health check response with status and configuration.
-
-        Raises:
-            requests.HTTPError: If the API is not reachable or returns an error.
-        """
         response = requests.get(f"{self.base_url}/healthz", timeout=5)
         response.raise_for_status()
         return response.json()
 
-    def send_error(
-        self,
-        language: str,
-        project: str,
-        message: str,
-        traceback: str | None = None,
-        tags: list[str] | None = None,
-        metadata: dict[str, Any] | None = None,
-        store_in_vault: bool = True,
-    ) -> ErrorResponse:
-        """Send an error to ErrorBrain for analysis and storage.
-
-        Args:
-            language: Programming language (python, go, terraform).
-            project: Project or service name.
-            message: Error message.
-            traceback: Optional stack trace.
-            tags: Optional list of tags.
-            metadata: Optional metadata dictionary.
-            store_in_vault: Whether to save in Obsidian vault.
-
-        Returns:
-            ErrorResponse with explanation and saved path.
-
-        Raises:
-            requests.HTTPError: If the API request fails.
-        """
-        report = ErrorReport(
-            language=language,
-            project=project,
-            message=message,
-            traceback=traceback,
-            tags=tags or [],
-            metadata=metadata,
-            store_in_vault=store_in_vault,
-        )
-
+    def submit_event(self, event: ErrorEvent) -> Verdict:
         response = requests.post(
-            f"{self.base_url}/v1/errors",
-            json=report.model_dump(),
-            timeout=30,
+            f"{self.base_url}/events",
+            json=event.model_dump(mode="json"),
+            timeout=10,
         )
         response.raise_for_status()
-        return ErrorResponse(**response.json())
+        return Verdict.model_validate(response.json())
 
-    async def send_error_async(
-        self,
-        *,
-        language: str,
-        project: str,
-        message: str,
-        traceback: str | None = None,
-        tags: list[str] | None = None,
-        metadata: dict[str, Any] | None = None,
-        store_in_vault: bool = True,
-    ) -> ErrorResponse:
-        """Async Variante von send_error mit httpx.AsyncClient."""
-
-        report = self._build_report(
-            language=language,
-            project=project,
-            message=message,
-            traceback=traceback,
-            tags=tags,
-            metadata=metadata,
-            store_in_vault=store_in_vault,
-        )
-
-        async with httpx.AsyncClient(timeout=30) as client:
+    async def submit_event_async(self, event: ErrorEvent) -> Verdict:
+        async with httpx.AsyncClient(timeout=10) as client:
             response = await client.post(
-                f"{self.base_url}/v1/errors",
-                json=report.model_dump(),
+                f"{self.base_url}/events",
+                json=event.model_dump(mode="json"),
             )
             response.raise_for_status()
-            return ErrorResponse(**response.json())
+            return Verdict.model_validate(response.json())
 
-    def send_exception(
-        self,
-        exc: BaseException,
-        project: str,
-        language: str = "python",
-        tags: list[str] | None = None,
-        metadata: dict[str, Any] | None = None,
-        store_in_vault: bool = True,
-    ) -> ErrorResponse:
-        """Send a Python exception to ErrorBrain.
+    def get_verdict(self, event_id: str) -> Verdict:
+        response = requests.get(f"{self.base_url}/analysis/{event_id}", timeout=5)
+        response.raise_for_status()
+        return Verdict.model_validate(response.json())
 
-        Args:
-            exc: The exception object.
-            project: Project or service name.
-            language: Programming language (default: python).
-            tags: Optional list of tags.
-            metadata: Optional metadata dictionary.
-            store_in_vault: Whether to save in Obsidian vault.
+    def get_analysis(self, event_id: str) -> Verdict:
+        return self.get_verdict(event_id)
 
-        Returns:
-            ErrorResponse with explanation and saved path.
+    def explain(self, event_id: str) -> ExplainResponse:
+        response = requests.get(f"{self.base_url}/explain/{event_id}", timeout=5)
+        response.raise_for_status()
+        return ExplainResponse.model_validate(response.json())
 
-        Raises:
-            requests.HTTPError: If the API request fails.
-        """
-        import traceback as tb
+    async def get_verdict_async(self, event_id: str) -> Verdict:
+        async with httpx.AsyncClient(timeout=5) as client:
+            response = await client.get(f"{self.base_url}/analysis/{event_id}")
+            response.raise_for_status()
+            return Verdict.model_validate(response.json())
 
-        traceback_str = "".join(tb.format_exception(type(exc), exc, exc.__traceback__))
-
-        return self.send_error(
-            language=language,
-            project=project,
-            message=str(exc),
-            traceback=traceback_str,
-            tags=tags,
-            metadata=metadata,
-            store_in_vault=store_in_vault,
-        )
-
-    async def send_exception_async(
-        self,
-        exc: BaseException,
-        project: str,
-        language: str = "python",
-        tags: list[str] | None = None,
-        metadata: dict[str, Any] | None = None,
-        store_in_vault: bool = True,
-    ) -> ErrorResponse:
-        """Async Fehlerversand für Exceptions."""
-
-        import traceback as tb
-
-        traceback_str = "".join(tb.format_exception(type(exc), exc, exc.__traceback__))
-
-        return await self.send_error_async(
-            language=language,
-            project=project,
-            message=str(exc),
-            traceback=traceback_str,
-            tags=tags,
-            metadata=metadata,
-            store_in_vault=store_in_vault,
-        )
+    async def explain_async(self, event_id: str) -> ExplainResponse:
+        async with httpx.AsyncClient(timeout=5) as client:
+            response = await client.get(f"{self.base_url}/explain/{event_id}")
+            response.raise_for_status()
+            return ExplainResponse.model_validate(response.json())
 
 
 __all__ = [
     "ErrorBrainClient",
-    "ErrorReport",
-    "ErrorResponse",
+    "ErrorEvent",
+    "Verdict",
+    "ExplainResponse",
+    "Source",
+    "Evidence",
+    "Impact",
+    "Hypothesis",
+    "RecommendedAction",
 ]

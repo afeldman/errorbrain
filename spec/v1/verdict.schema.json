@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ErrorBrain Verdict",
+  "description": "Canonical verdict issued by ErrorBrain after analysis of an error event",
+  "type": "object",
+  "required": [
+    "id",
+    "event_id",
+    "hypothesis",
+    "impact",
+    "recommended_actions",
+    "evidence_refs",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this verdict (UUID recommended)",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "event_id": {
+      "type": "string",
+      "description": "Identifier of the source error event",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "hypothesis": {
+      "$ref": "#/definitions/hypothesis"
+    },
+    "impact": {
+      "$ref": "#/definitions/impact"
+    },
+    "recommended_actions": {
+      "type": "array",
+      "description": "Ordered list of recommended actions",
+      "items": {
+        "$ref": "#/definitions/recommended_action"
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "description": "References (by id or pointer) to supporting evidence",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC3339 timestamp when the verdict was created"
+    }
+  },
+  "definitions": {
+    "hypothesis": {
+      "type": "object",
+      "description": "Primary hypothesis explaining the root cause",
+      "required": [
+        "title",
+        "description",
+        "confidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Short hypothesis summary"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed, structured explanation"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence score in range [0,1]"
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "description": "Impact assessment",
+      "required": [
+        "severity",
+        "affected_components"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warning",
+            "critical"
+          ],
+          "description": "Impact severity"
+        },
+        "affected_components": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of impacted components or services"
+        }
+      }
+    },
+    "recommended_action": {
+      "type": "object",
+      "description": "Action the operator should take",
+      "required": [
+        "title",
+        "description",
+        "urgency"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Short action title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed action description"
+        },
+        "urgency": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "description": "Operational urgency"
+        }
+      }
+    }
+  }
+}
