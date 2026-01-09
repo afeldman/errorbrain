@@ -1,0 +1,73 @@
+# {{ hypothesis.title }}
+
+**Incident ID:** `{{ event_id }}`
+**Verdict ID:** `{{ verdict_id }}`
+**Created:** {{ created_at | strftime('%Y-%m-%d %H:%M:%S') }}
+**Status:** Documented
+
+---
+
+## Hypothese
+
+> {{ hypothesis.description }}
+
+**Confidence:** {{ "%.0f%%" % (hypothesis.confidence * 100) }}
+
+---
+
+## Impact
+
+**Severity:** `{{ impact.severity | upper }}`
+
+**Affected Components:**
+{% for component in impact.affected_components %}
+- `{{ component }}`
+{% endfor %}
+
+---
+
+## Evidence & Proof
+
+{% if evidence_refs %}
+**Referenced Evidence Items:**
+{% for ref in evidence_refs %}
+- {{ ref }}
+{% endfor %}
+{% else %}
+_No evidence items referenced._
+{% endif %}
+
+---
+
+## Recommended Actions
+
+{% if recommended_actions %}
+{% for action in recommended_actions %}
+### {{ action.title }} [{{ action.urgency | upper }}]
+
+{{ action.description }}
+
+{% endfor %}
+{% else %}
+_No recommended actions._
+{% endif %}
+
+---
+
+## What Did We Learn?
+
+_Add your personal insights and learnings here._
+
+---
+
+## Related Incidents
+
+_Link to other incidents or related notes:_
+
+-
+
+---
+
+## Tags
+
+#incident #errorbrain
