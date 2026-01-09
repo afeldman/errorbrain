@@ -13,8 +13,9 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import uuid4
 
-from any_llm import AnyLLM
 
+import requests
+import json
 from errorbrain_server.core.models import (
     ErrorEvent,
     Hypothesis,
@@ -22,90 +23,73 @@ from errorbrain_server.core.models import (
     RecommendedAction,
     Verdict,
 )
+from .config import LLM_ENABLED, LLM_KEY, LLM_HOST, LLM_MODEL
+
+def _call_any_llm(prompt: str) -> dict:
+    """Sendet einen OpenAI-kompatiblen Chat-Request an any-llm und gibt das JSON zurück."""
+    url = LLM_HOST.rstrip("/") + "/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {LLM_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": LLM_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 1024
+    }
+    try:
+        resp = requests.post(url, headers=headers, json=payload, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+        # Extrahiere den Content
+        content = data["choices"][0]["message"]["content"]
+        # Versuche, JSON zu parsen
+        return json.loads(content)
+    except Exception as exc:
+        raise RuntimeError(f"LLM-Request/Parsing fehlgeschlagen: {exc}")
 
 
 def analyze_with_llm(event: ErrorEvent) -> Verdict:
     """
-    Generate a Verdict by interpreting the ErrorEvent with an LLM.
-
-    This function uses the `any-llm` library to connect to a configured
-    LLM provider (e.g., a local LM Studio instance). It constructs a
-    prompt that instructs the LLM to act as a reasoning engine,
-    generating a structured hypothesis and actionable recommendations.
-
-    If the LLM fails or the output cannot be parsed, this function
-    should raise an exception to allow the engine to fall back to the
-    deterministic rules-based approach.
-
-    Args:
-        event: The normalized error event.
-
-    Returns:
-        A Verdict object generated from the LLM's analysis.
+    Interpretiert das ErrorEvent mit einem LLM (any-llm) und liefert einen Verdict.
+    Bei Fehlern wird eine Exception geworfen, damit der Engine-Fallback auf rules.py greift.
     """
-    # 1. Setup any-llm client
-    # client = AnyLLM() # Reads configuration from environment variables
-
-    # 2. Construct a detailed prompt for the LLM
-    # prompt = _build_llm_prompt(event)
-
-    # 3. Query the LLM
-    # response = client.chat.completions.create(
-    #     model="some-model-name", # From ENV
-    #     messages=[{"role": "user", "content": prompt}],
-    #     temperature=0.2,
-    # )
-    # llm_output = response.choices[0].message.content
-
-    # 4. Parse the LLM output into a Verdict object.
-    #    This is a critical step and requires robust parsing,
-    #    potentially with a JSON output mode from the LLM.
-    #    (For skeleton, we will return a placeholder)
-
-    # Placeholder implementation:
-    # In a real scenario, this would be derived from the LLM response.
-    placeholder_hypothesis = Hypothesis(
-        title=f"LLM-based analysis for: {event.source.name}",
-        description=(
-            "This is a placeholder hypothesis from the LLM. It would typically "
-            "contain a summary of the likely root cause based on the event data."
-        ),
-        confidence=0.75,  # LLMs often provide a different confidence level
-    )
-
-    placeholder_impact = Impact(
-        severity="warning",  # Placeholder
-        affected_components=[event.source.name],
-    )
-
-    placeholder_actions = [
-        RecommendedAction(
-            title="Investigate based on LLM insight",
-            description=(
-                "The language model suggested a potential area of investigation. "
-                "Review the full analysis and check system components."
-            ),
-            urgency="medium",
+    if not LLM_ENABLED:
+        raise RuntimeError("LLMReasoner instantiated while LLM is disabled")
+    prompt = _build_llm_prompt(event)
+    try:
+        llm_json = _call_any_llm(prompt)
+        # Robust: Fallback auf Default-Werte, falls Felder fehlen
+        hypothesis = Hypothesis(
+            title=llm_json.get("hypothesis", {}).get("title", "LLM Hypothesis"),
+            description=llm_json.get("hypothesis", {}).get("description", "No description."),
+            confidence=llm_json.get("hypothesis", {}).get("confidence", 0.5),
         )
-    ]
-
-    # This function is a skeleton and does not perform a real LLM call.
-    # It returns a mock verdict to demonstrate the flow.
-    verdict = Verdict(
-        id=str(uuid4()),
-        event_id=event.id,
-        hypothesis=placeholder_hypothesis,
-        impact=placeholder_impact,
-        recommended_actions=placeholder_actions,
-        evidence_refs=[],
-        created_at=datetime.utcnow(),
-    )
-
-    # To complete this, one would need to add error handling and
-    # the actual `any-llm` call and parsing logic.
-    # For now, we raise a NotImplementedError to ensure it's not
-    # used accidentally until fully implemented.
-    raise NotImplementedError("LLM analysis is not fully implemented.")
+        impact = Impact(
+            severity=llm_json.get("impact", {}).get("severity", "info"),
+            affected_components=[event.source.name],
+        )
+        actions = []
+        for act in llm_json.get("recommended_actions", []):
+            actions.append(RecommendedAction(
+                title=act.get("title", "LLM Action"),
+                description=act.get("description", "No description."),
+                urgency=act.get("urgency", "medium"),
+            ))
+        verdict = Verdict(
+            id=str(uuid4()),
+            event_id=event.id,
+            hypothesis=hypothesis,
+            impact=impact,
+            recommended_actions=actions,
+            evidence_refs=[],
+            created_at=datetime.utcnow(),
+        )
+        return verdict
+    except Exception as exc:
+        # Fehler werden nach oben gereicht, Engine übernimmt Fallback
+        raise RuntimeError(f"LLM-Analyse fehlgeschlagen: {exc}")
 
 
 def _build_llm_prompt(event: ErrorEvent) -> str:
