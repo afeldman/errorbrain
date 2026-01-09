@@ -1,0 +1,47 @@
+{
+  "event_id": "550e8400-e29b-41d4-a716-446655440002",
+  "evidence_context": {
+    "collection_timestamp": "2026-01-09T15:45:30Z",
+    "key_evidence": [
+      {
+        "type": "application_logs",
+        "finding": "3 out of 8 pods failed to initialize with error: 'cannot connect to postgres-svc.prod-infra:5432'",
+        "confidence": 0.98
+      },
+      {
+        "type": "network_connectivity",
+        "finding": "HTTP GET to postgres-svc:5432 returned connection_refused (port not open)",
+        "confidence": 0.99
+      },
+      {
+        "type": "infrastructure_metrics",
+        "finding": "Prometheus metric 'postgres_up' dropped to 0 at 15:44:50 (before deployment timeout at 15:45:30)",
+        "confidence": 0.95
+      },
+      {
+        "type": "kubernetes_events",
+        "finding": "Service 'postgres-svc' was modified at 15:30 with note: 'ServicePort 5432 temporarily removed during maintenance' with 10-minute estimated duration",
+        "confidence": 0.99
+      },
+      {
+        "type": "maintenance_logs",
+        "finding": "Maintenance pod logs show: 'Database maintenance started at 15:35. Estimated duration: 10 minutes' (maint-2026-01-09-1)",
+        "confidence": 0.98
+      }
+    ],
+    "temporal_timeline": {
+      "15:30:00": "PostgreSQL maintenance window announced, port 5432 removed from Service",
+      "15:35:22": "Maintenance actually starts (5 min late)",
+      "15:40:00": "CI/CD deployment initiated (during maintenance, unaware of window)",
+      "15:44:50": "postgres_up metric drops to 0",
+      "15:45:15": "App pods try to connect, get 'connection refused'",
+      "15:45:30": "Deployment timeout declared (30 min had passed)"
+    }
+  },
+  "root_cause_analysis": {
+    "symptom": "Pods stuck in CrashLoopBackOff, unable to initialize",
+    "immediate_cause": "PostgreSQL service unavailable (expected maintenance window)",
+    "underlying_issue": "Lack of coordination between CI/CD and maintenance scheduling",
+    "this_is_not_a_code_bug": "The application code and deployment definition are both correct. The timing is the problem."
+  }
+}

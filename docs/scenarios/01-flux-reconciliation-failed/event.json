@@ -1,0 +1,64 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "timestamp": "2026-01-09T14:32:00Z",
+  "source": {
+    "language": "other",
+    "name": "flux-controller",
+    "version": "2.0.5",
+    "environment": "production",
+    "hostname": "flux-system-0",
+    "tags": ["gitops", "prod", "critical-infra"]
+  },
+  "message": "Reconciliation failed: error validating Kustomization 'default/app-config': Invalid Helm values: key 'database.password' not found",
+  "error_type": "HelmValidationError",
+  "severity": "error",
+  "stack_trace": "github.com/fluxcd/flux2/pkg/helm.(*HelmRelease).Reconcile() at helm.go:234\n  github.com/fluxcd/flux2/pkg/helm.validateValues() at helm.go:156",
+  "metadata": {
+    "component": "flux-kustomization",
+    "cluster": "prod-us-east-1",
+    "namespace": "app-system",
+    "kustomization": "app-config",
+    "helm_chart": "app-api-service",
+    "chart_version": "3.2.1",
+    "attempted_action": "helm_template_validation"
+  },
+  "evidence": [
+    {
+      "type": "log_line",
+      "data": {
+        "timestamp": "2026-01-09T14:32:00Z",
+        "source": "flux-controller",
+        "level": "ERROR",
+        "message": "error validating Kustomization: Invalid Helm values: key 'database.password' not found in ConfigMap/Secret"
+      }
+    },
+    {
+      "type": "database_query",
+      "data": {
+        "query": "SELECT COUNT(*) FROM git_commits WHERE repo='app-config' AND timestamp > NOW()-INTERVAL 5m",
+        "result": 3,
+        "interpretation": "3 commits pushed in last 5 min - likely recent value change"
+      }
+    },
+    {
+      "type": "event",
+      "data": {
+        "type": "ConfigMap",
+        "name": "app-config-values",
+        "namespace": "app-system",
+        "action": "modified",
+        "timestamp": "2026-01-09T14:31:15Z",
+        "change_summary": "Removed 'database.password' key (likely during secret rotation)"
+      }
+    },
+    {
+      "type": "http_request",
+      "data": {
+        "method": "GET",
+        "url": "https://api.github.com/repos/myorg/app-config/commits?since=2026-01-09T14:30:00Z",
+        "status": 200,
+        "response_summary": "Last commit: 'Rotate secrets - remove hardcoded db password' by SecOps"
+      }
+    }
+  ]
+}

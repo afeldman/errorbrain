@@ -1,0 +1,38 @@
+{
+  "event_id": "550e8400-e29b-41d4-a716-446655440001",
+  "evidence_context": {
+    "collection_timestamp": "2026-01-09T14:32:30Z",
+    "evidence_sources": [
+      {
+        "type": "log_analysis",
+        "confidence": 0.95,
+        "key_finding": "Flux controller logs show clear dependency error: missing 'database.password' key",
+        "severity": "critical"
+      },
+      {
+        "type": "git_history",
+        "confidence": 0.9,
+        "key_finding": "Recent commit by SecOps explicitly removed database.password from ConfigMap (secret rotation)",
+        "recent_commits": 3,
+        "timeframe": "last 5 minutes"
+      },
+      {
+        "type": "configuration_change",
+        "confidence": 0.88,
+        "key_finding": "ConfigMap 'app-config-values' was modified 45 seconds before Flux error occurred",
+        "root_cause_likelihood": "very high"
+      },
+      {
+        "type": "dependency_tracking",
+        "confidence": 0.92,
+        "key_finding": "Helm chart expects 'database.password' but ConfigMap no longer provides it",
+        "blocked_component": "app-api-service@3.2.1"
+      }
+    ]
+  },
+  "correlation_analysis": {
+    "temporal_proximity": "ConfigMap change → Flux reconciliation failure (45s gap, causal)",
+    "root_cause_pattern": "Configuration missing required dependency",
+    "secondary_factors": "Secret rotation process incomplete or miscommunicated to Helm chart deployment"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "event_id": "550e8400-e29b-41d4-a716-446655440003",
+  "evidence_context": {
+    "collection_timestamp": "2026-01-09T16:22:15Z",
+    "crash_pattern": "CrashLoopBackOff (12 restarts in ~12 minutes = consistent, reproducible failure)",
+    "evidence_sources": [
+      {
+        "type": "application_error",
+        "source": "Pod logs",
+        "confidence": 0.99,
+        "finding": "KeyError: 'STRIPE_API_KEY' in payment_worker/__init__.py:23 – application code expects this env var to be set"
+      },
+      {
+        "type": "kubernetes_secret_lookup",
+        "source": "Kubernetes API (404 response)",
+        "confidence": 1.0,
+        "finding": "Secret 'stripe-secrets' does not exist in namespace 'payment-system'"
+      },
+      {
+        "type": "pod_specification",
+        "source": "Pod definition",
+        "confidence": 0.99,
+        "finding": "Pod spec defines: valueFrom.secretKeyRef.name='stripe-secrets', key='api-key' – but this secret cannot be resolved"
+      },
+      {
+        "type": "deployment_timeline",
+        "source": "Cluster logs",
+        "confidence": 0.95,
+        "finding": "Deployment 'payment-worker-v1.8.2' was created at 16:10:28, but operator did not create the required Secret before rolling out"
+      },
+      {
+        "type": "pod_restart_pattern",
+        "source": "Kubernetes events",
+        "confidence": 0.99,
+        "finding": "Pod has restarted 12 times in ~12 minutes with consistent failure (ExitCode 1, 'Error' reason) – this is a permanent configuration problem, not a transient issue"
+      }
+    ]
+  },
+  "diagnosis": {
+    "issue_category": "configuration_missing_dependency",
+    "why_this_crashed": "The application requires STRIPE_API_KEY as a startup dependency (non-optional). The Pod manifest references a Kubernetes Secret to provide this, but the Secret was never created. Result: Pod starts → loads config → tries to read env var → KeyError → crash → Kubernetes restarts → repeat.",
+    "why_it_keeps_crashing": "Nothing in the environment has changed. The missing Secret is still missing. Kubernetes will keep restarting the pod forever until the Secret is created.",
+    "is_this_a_code_bug": "No. The application code is correct (it validates that required config exists). The deployment procedure has a bug (missing pre-requisite step).",
+    "this_is_not_transient": "Not a network hiccup, not a resource issue. This will not resolve itself. Manual intervention required."
+  }
+}

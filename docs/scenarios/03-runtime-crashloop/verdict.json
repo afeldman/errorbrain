@@ -1,0 +1,42 @@
+{
+  "id": "9b5af6ba-d948-425e-9639-2e9ab5b7e18d",
+  "event_id": "550e8400-e29b-41d4-a716-446655440003",
+  "hypothesis": {
+    "title": "CrashLoop: Missing required Kubernetes Secret 'stripe-secrets'",
+    "description": "The payment-worker Pod is in a CrashLoopBackOff state because it cannot start. The application requires the environment variable 'STRIPE_API_KEY', which should be injected from a Kubernetes Secret named 'stripe-secrets'. This Secret does not exist in the 'payment-system' namespace. The deployment was created at 16:10:28, but the required Secret was not created or migrated beforehand.",
+    "confidence": 0.85
+  },
+  "impact": {
+    "severity": "critical",
+    "affected_components": [
+      "payment-worker",
+      "payment-system",
+      "stripe-secrets (missing)"
+    ]
+  },
+  "recommended_actions": [
+    {
+      "title": "Create the missing Stripe API Secret immediately",
+      "description": "Create a Kubernetes Secret named 'stripe-secrets' in the 'payment-system' namespace with the key 'api-key' containing the valid Stripe API key. Command:\n\nkubectl create secret generic stripe-secrets \\\n  --from-literal=api-key=$YOUR_STRIPE_API_KEY \\\n  -n payment-system\n\nOnce created, pods will automatically restart and should initialize successfully.",
+      "urgency": "high"
+    },
+    {
+      "title": "Verify the Secret was created and mounted correctly",
+      "description": "After creating the Secret, check that the pod restarted and the logs show successful initialization (look for confirmation that 'STRIPE_API_KEY' was loaded). If pods still don't start, verify the Secret key name matches the Pod spec ('api-key').",
+      "urgency": "high"
+    },
+    {
+      "title": "Update deployment procedures to prevent recurrence",
+      "description": "Establish a checklist: Secrets must exist BEFORE deployment rollout. Consider using Sealed Secrets, External Secrets, or a pre-deployment validation script that ensures all required Secrets are present in the target namespace.",
+      "urgency": "medium"
+    }
+  ],
+  "evidence_refs": [
+    "550e8400-e29b-41d4-a716-446655440003#e0",
+    "550e8400-e29b-41d4-a716-446655440003#e1",
+    "550e8400-e29b-41d4-a716-446655440003#e2",
+    "550e8400-e29b-41d4-a716-446655440003#e3",
+    "550e8400-e29b-41d4-a716-446655440003#e4"
+  ],
+  "created_at": "2026-01-09T16:22:15Z"
+}

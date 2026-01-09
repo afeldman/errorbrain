@@ -1,0 +1,83 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440003",
+  "timestamp": "2026-01-09T16:22:15Z",
+  "source": {
+    "language": "python",
+    "name": "payment-worker",
+    "version": "1.8.2",
+    "environment": "production",
+    "hostname": "payment-worker-pod-3",
+    "tags": ["worker", "critical", "payment-processing"]
+  },
+  "message": "Fatal error on startup: Environment variable 'STRIPE_API_KEY' not set. Cannot initialize payment processor.",
+  "error_type": "EnvironmentVariableError",
+  "severity": "critical",
+  "stack_trace": "payment_worker/__init__.py:23 in load_config\n  stripe.api_key = os.environ['STRIPE_API_KEY']\nKeyError: 'STRIPE_API_KEY'",
+  "metadata": {
+    "component": "payment-worker",
+    "deployment": "payment-worker-v1.8.2",
+    "pod_restart_count": 12,
+    "phase": "CrashLoopBackOff",
+    "container_status": "Waiting",
+    "last_crash_reason": "ExitCode 1"
+  },
+  "evidence": [
+    {
+      "type": "log_line",
+      "data": {
+        "timestamp": "2026-01-09T16:22:15Z",
+        "source": "payment-worker-pod-3",
+        "level": "CRITICAL",
+        "message": "Environment variable 'STRIPE_API_KEY' is not set. Ensure the Secret 'stripe-secrets' is mounted as environment variables in the Pod spec.",
+        "pod_name": "payment-worker-pod-3"
+      }
+    },
+    {
+      "type": "http_request",
+      "data": {
+        "method": "GET",
+        "url": "https://kubernetes.default.svc/api/v1/namespaces/payment-system/secrets/stripe-secrets",
+        "status": 404,
+        "response_body": "{\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"secrets \\\"stripe-secrets\\\" not found in namespace \\\"payment-system\\\"\"}"
+      }
+    },
+    {
+      "type": "event",
+      "data": {
+        "type": "Pod",
+        "name": "payment-worker-pod-3",
+        "namespace": "payment-system",
+        "action": "created",
+        "timestamp": "2026-01-09T16:10:30Z",
+        "restart_count": 12,
+        "last_state": {
+          "terminated": {
+            "exit_code": 1,
+            "reason": "Error",
+            "message": "container exited with code 1"
+          }
+        }
+      }
+    },
+    {
+      "type": "custom",
+      "data": {
+        "analysis": "Pod definition references Secret 'stripe-secrets' in environment variables, but Secret does not exist in the 'payment-system' namespace",
+        "pod_env_spec": [
+          "{ name: 'STRIPE_API_KEY', valueFrom: { secretKeyRef: { name: 'stripe-secrets', key: 'api-key' } } }"
+        ],
+        "secret_status": "MISSING"
+      }
+    },
+    {
+      "type": "log_line",
+      "data": {
+        "timestamp": "2026-01-09T16:10:28Z",
+        "source": "cluster-ops",
+        "level": "INFO",
+        "message": "Deployment 'payment-worker-v1.8.2' created successfully. Waiting for pods to start.",
+        "note": "Operator did NOT create the required 'stripe-secrets' Secret before rolling out the deployment"
+      }
+    }
+  ]
+}

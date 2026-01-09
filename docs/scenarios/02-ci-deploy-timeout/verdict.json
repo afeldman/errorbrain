@@ -1,0 +1,42 @@
+{
+  "id": "79f78648-d026-46b1-9d27-b8e9ad3b2b01",
+  "event_id": "550e8400-e29b-41d4-a716-446655440002",
+  "hypothesis": {
+    "title": "Deployment blocked by temporary downstream dependency outage (PostgreSQL maintenance)",
+    "description": "CI/CD deployment of app-api-v2.3.0 timed out after 30 minutes because the application cannot initialize – it depends on PostgreSQL (postgres-svc.prod-infra:5432), which is currently unavailable due to a scheduled maintenance window that started at 15:30. The maintenance was estimated to complete in 10 minutes.",
+    "confidence": 0.85
+  },
+  "impact": {
+    "severity": "critical",
+    "affected_components": [
+      "ci-deployer",
+      "app-api-v2.3.0",
+      "postgres-svc"
+    ]
+  },
+  "recommended_actions": [
+    {
+      "title": "Verify maintenance completion and service restoration",
+      "description": "Check the PostgreSQL maintenance status (maintenance ID: maint-2026-01-09-1) to confirm it has completed and the service port 5432 is restored. Monitor the postgres_up metric in Prometheus to verify.",
+      "urgency": "high"
+    },
+    {
+      "title": "Retry deployment after service is healthy",
+      "description": "Once PostgreSQL is confirmed healthy, retry the deployment. The rollout should succeed if the dependency is restored. Consider: Should the timeout window have been longer given known maintenance windows?",
+      "urgency": "high"
+    },
+    {
+      "title": "Coordinate CI/CD and maintenance scheduling",
+      "description": "Future deployments should avoid maintenance windows. Establish a contract: maintenance teams must notify CI/CD or disable automated deployments during scheduled outages. Consider using a maintenance-aware deployment scheduler.",
+      "urgency": "medium"
+    }
+  ],
+  "evidence_refs": [
+    "550e8400-e29b-41d4-a716-446655440002#e0",
+    "550e8400-e29b-41d4-a716-446655440002#e1",
+    "550e8400-e29b-41d4-a716-446655440002#e2",
+    "550e8400-e29b-41d4-a716-446655440002#e3",
+    "550e8400-e29b-41d4-a716-446655440002#e4"
+  ],
+  "created_at": "2026-01-09T15:45:30Z"
+}
