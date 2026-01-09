@@ -1,0 +1,25 @@
+[project]
+name = "error_brain"
+version = "0.1.0"
+description = "ErrorBrain Python SDK - Send errors to your Second Brain"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.32.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.12.4",
+]
+
+[tool.uv]
+python-preference = "managed"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "sphinx>=7.2.0",
+    "sphinx-rtd-theme>=2.0.0",
+]

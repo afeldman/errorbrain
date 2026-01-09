@@ -8,7 +8,8 @@ Jeder Fehler wird zu dauerhaftem, dokumentiertem und durchsuchbarem Wissen.
 
 ## 🚀 Features
 
-- ✅ **6 SDKs** - Python, Go, TypeScript, Deno, Rust, C++
+- ✅ **6 SDKs übertragen** - TypeScript, Deno, Go, Python, Rust, C++ in `sdk/`
+- ✅ **Spec-driven** - Kanonische Verträge in [spec/](./spec/)
 - ✅ **FastAPI Server** - Modern, async, fully typed
 - ✅ **AI-Powered** - Fehleranalyse mit LM Studio (lokal) oder OpenAI
 - ✅ **Obsidian Integration** - Automatische Second Brain Speicherung
@@ -41,8 +42,8 @@ cp .env.example .env
 
 API läuft auf:
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI**: <http://localhost:8000/docs>
+- **ReDoc**: <http://localhost:8000/redoc>
 
 ### 4. Health Check
 
@@ -87,19 +88,77 @@ task --list-all      # Alle Tasks anzeigen
 ## 📁 Repository-Struktur
 
 ```
-api/                    → FastAPI Server
-sdk-python/             → Python SDK
-sdk-go/                 → Go SDK
-sdk-typescript/         → TypeScript/JavaScript SDK
-sdk-deno/               → Deno SDK
-sdk-rust/               → Rust SDK (async/tokio)
-sdk-cpp/                → C++ SDK (modern C++17)
+spec/                   → Canonical Contracts (Versioniert: v1/)
+  └── v1/               → API v1 Specifications
+      ├── error_event.schema.json
+      ├── source.schema.json
+      └── evidence.schema.json
+
+sdk/                    → All 6 SDKs (TypeScript, Deno, Go, Python, Rust, C++)
+  ├── typescript/       → Node.js + Browser SDK
+  ├── deno/             → Deno SDK (native fetch)
+  ├── go/               → Go SDK (stdlib only)
+  ├── python/           → Python SDK (asyncio + pydantic)
+  ├── rust/             → Rust SDK (tokio + serde)
+  └── cpp/              → C++ SDK (modern C++17/20)
+
+server/                 → FastAPI Server (implements spec/v1/)
+  ├── src/errorbrain_server/
+  │   ├── main.py       → FastAPI app
+  │   ├── v1/           → API v1 implementation
+  │   ├── models/       → Pydantic models from spec/v1/
+  │   ├── db/           → Database layer
+  │   └── llm/          → LLM integration
+  ├── tests/
+  └── ARCHITECTURE.md   → Design documentation
+
+docs/                   → Sphinx & Doxygen Documentation
+examples/               → Code Examples für alle SDKs
 terraform-provider/     → Terraform CLI Wrapper
 .github/workflows/      → GitHub Actions CI/CD
-docs/                   → Sphinx & Doxygen Docs
-examples/               → Code examples
-tests/                  → Test suites
 ```
+
+**Architektur Details:** Kurzfassung siehe unten, tiefere Server-Details in [server/ARCHITECTURE.md](server/ARCHITECTURE.md).
+
+## 🧠 Architektur & Mentales Modell
+
+- **Core & Satelliten:** spec/v1 als unveränderlicher Vertrag; SDKs sprechen nur spec, Server implementiert spec.
+- **Spec ist Law:** Breaking Changes nur per MAJOR bump (`spec/v1/…`).
+- **Entkopplung:** SDKs importieren keine Server-Module; Server importiert spec, nicht SDKs.
+- **Flows:**
+  - Client → SDK → `POST /v1/errors` → Server → LLM Analyse → Vault (Obsidian)
+  - Health: `GET /healthz`
+
+```
+Client Code → SDK (6x) → spec/v1/error_event.schema.json → FastAPI Server → Obsidian Vault
+```
+
+## 📈 Status & Tests
+
+| SDK | Status | Tests | Async/Concurrency | Spec v1 |
+|-----|--------|-------|-------------------|---------|
+| TypeScript | ✅ Stable | ✅ Jest | ✅ Promises | ✅ |
+| Deno | ✅ Stable | ✅ deno test | ✅ Fetch + AbortController | ✅ |
+| Go | ✅ Stable | ✅ go test | ✅ Context + timeouts | ✅ |
+| Python | ✅ Stable | ✅ `uv run pytest` | ⚠️ Sync (`requests`) | ✅ |
+| Rust | ✅ Stable | ✅ `cargo test` | ✅ tokio async | ✅ |
+| C++ | ✅ Stable | ✅ `ctest` | ⚠️ sync + std::future wrappers | ✅ |
+
+**Zuletzt ausgeführt:**
+
+- Python: `env PYTHONPATH=src uv run --extra dev --python-preference=managed pytest` → 5/5 passed
+- Rust: `cargo test` → all passed (incl. doctests)
+- C++: `ctest --test-dir sdk/cpp/build` → 9/9 passed
+
+## 🚀 Migration & Release-Plan
+
+- **Spec Versioning:** `spec/v1/` ist die Source of Truth (error_event, source, evidence Schemas).
+- **SDKs:** Alle sechs SDKs aktualisiert auf spec/v1 und getestet; Beispiele unter `sdk/*/examples`.
+- **Server:** FastAPI unter `server/` (aus `api/` migriert); validiert gegen spec/v1, Docs in `server/ARCHITECTURE.md`.
+- **Offene Iterationen:**
+  1. Server v1 Endpunkte finalisieren und gegen spec/v1 testen
+  2. CI/CD pro SDK + Server (test, lint, publish)
+  3. Optional: Python Async-Client, C++ echte async I/O
 
 ## 💻 SDK Beispiele
 
@@ -120,17 +179,23 @@ print(f"Error ID: {response.id}")
 ### Go
 
 ```go
+import "github.com/afeldman/errorbrain/sdk/go"
+
 client := errorbrain.NewClient("")
 response, err := client.SendError(&errorbrain.ErrorReport{
-    Language: "go",
-    Project:  "my-service",
-    Message:  "database failed",
+    Language:     "go",
+    Project:      "billing-service",
+    Message:      "payment failed",
+    Tags:         []string{"prod", "payment"},
+    StoreInVault: true,
 })
 ```
 
 ### TypeScript
 
 ```typescript
+import { ErrorBrainClient } from "@errorbrain/sdk-typescript";
+
 const client = new ErrorBrainClient();
 const response = await client.sendException(error, "my-service", {
   tags: ["prod"],
@@ -140,7 +205,8 @@ const response = await client.sendException(error, "my-service", {
 ### Deno
 
 ```typescript
-import { ErrorBrainClient } from "./sdk-deno/src/mod.ts";
+import { ErrorBrainClient } from "./sdk/deno/src/mod.ts";
+
 const client = new ErrorBrainClient();
 const response = await client.sendException(error, "my-service");
 ```
@@ -276,10 +342,10 @@ task test-deno
 
 ## 🔗 Links
 
-- **GitHub**: https://github.com/afeldman/errorbrain
-- **Issues**: https://github.com/afeldman/errorbrain/issues
-- **LM Studio**: https://lmstudio.ai/
-- **Obsidian**: https://obsidian.md/
+- **GitHub**: <https://github.com/afeldman/errorbrain>
+- **Issues**: <https://github.com/afeldman/errorbrain/issues>
+- **LM Studio**: <https://lmstudio.ai/>
+- **Obsidian**: <https://obsidian.md/>
 
 ## 📝 License
 

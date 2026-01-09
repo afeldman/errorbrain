@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ErrorBrain Error Event",
+  "description": "Canonical error event format for ErrorBrain SDKs and Server",
+  "type": "object",
+  "required": [
+    "id",
+    "timestamp",
+    "source",
+    "message"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this error event (UUID)",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when error occurred"
+    },
+    "source": {
+      "$ref": "#/definitions/source"
+    },
+    "message": {
+      "type": "string",
+      "description": "Error message or exception message"
+    },
+    "stack_trace": {
+      "type": "string",
+      "description": "Full stack trace (if available)"
+    },
+    "error_type": {
+      "type": "string",
+      "description": "Error type or exception class (e.g., ValueError, NullPointerException)"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "debug",
+        "info",
+        "warning",
+        "error",
+        "critical"
+      ],
+      "description": "Error severity level"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context (environment, user, request, etc.)",
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Additional evidence items (logs, metrics, related events)",
+      "items": {
+        "$ref": "#/definitions/evidence"
+      }
+    }
+  },
+  "definitions": {
+    "source": {
+      "type": "object",
+      "description": "Source of the error (application, service, system)",
+      "required": [
+        "language",
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "type": "string",
+          "enum": [
+            "python",
+            "go",
+            "typescript",
+            "javascript",
+            "deno",
+            "rust",
+            "cpp",
+            "terraform",
+            "other"
+          ],
+          "description": "Programming language or system"
+        },
+        "name": {
+          "type": "string",
+          "description": "Application/service name (e.g., billing-service)"
+        },
+        "version": {
+          "type": "string",
+          "description": "Application version"
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "local",
+            "development",
+            "staging",
+            "production"
+          ],
+          "description": "Environment where error occurred"
+        },
+        "hostname": {
+          "type": "string",
+          "description": "Hostname or pod name where error occurred"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Custom tags for filtering and grouping"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Evidence item providing context for error",
+      "required": [
+        "type",
+        "data"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "log_line",
+            "metric",
+            "http_request",
+            "http_response",
+            "database_query",
+            "event",
+            "custom"
+          ],
+          "description": "Type of evidence"
+        },
+        "data": {
+          "type": "object",
+          "description": "Evidence data (structure depends on type)",
+          "additionalProperties": true
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this evidence was collected"
+        }
+      }
+    }
+  }
+}

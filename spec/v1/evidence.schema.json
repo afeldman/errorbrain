@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ErrorBrain Evidence",
+  "description": "Evidence item providing additional context for errors",
+  "type": "object",
+  "required": [
+    "type",
+    "data"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "log_line",
+        "metric",
+        "http_request",
+        "http_response",
+        "database_query",
+        "event",
+        "custom"
+      ],
+      "description": "Type of evidence"
+    },
+    "data": {
+      "type": "object",
+      "description": "Evidence payload (schema depends on type)",
+      "additionalProperties": true
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when evidence was collected"
+    }
+  },
+  "definitions": {
+    "log_evidence": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warning",
+            "error",
+            "critical"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "logger": {
+          "type": "string"
+        }
+      }
+    },
+    "http_request_evidence": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "http_response_evidence": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "metric_evidence": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

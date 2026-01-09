@@ -96,6 +96,7 @@ conan.lock
 
 # Documentation
 docs/_build/
+**/docs/_build/
 docs/cpp/
 site/
 
