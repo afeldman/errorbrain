@@ -1,92 +1,15 @@
 # ErrorBrain API Server
 
-FastAPI server for error tracking, AI analysis, and Obsidian vault storage.
-
-## Features
-
-- **FastAPI** REST API
-- **LLM Integration** via any-llm (supports LM Studio, OpenAI, etc.)
-- **Obsidian Storage** - Save errors as searchable Markdown
-- **Type-Safe** - Full Pydantic models
-- **Tested** - Unit tests with pytest
-- **Linted** - Ruff + mypy
-
-## Project Structure
-
-```
-api/
-├── src/
-│   └── errorbrain_server/
-│       ├── __init__.py
-│       └── main.py          # FastAPI app
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py          # Test configuration
-│   └── test_main.py         # API tests
-├── pyproject.toml           # Dependencies & config
-└── .env.example             # Environment template
-```
-
-## Installation
-
-```bash
-# Install with all development dependencies
-uv sync --all-extras
-```
-
-## Configuration
-
-Create `.env` file:
-
-```bash
-# App Name
-ERRORBRAIN_APP_NAME=errorbrain-server
-
-# LM Studio Configuration (local)
-ERRORBRAIN_LLM_PROVIDER=openai
-ERRORBRAIN_LLM_MODEL=local-model
-ERRORBRAIN_LLM_BASE_URL=http://localhost:1234/v1
-ERRORBRAIN_LLM_API_KEY=lm-studio
-
-# Obsidian Vault Path
-ERRORBRAIN_OBSIDIAN_ENABLED=true
-ERRORBRAIN_OBSIDIAN_PATH=/Users/anton.feldmann/lynq/errors
-```
-
-## Running
-
-### Development Mode (with auto-reload)
-
-```bash
-uv run errorbrain-server-dev
-```
-
-### Production Mode
-
-```bash
-uv run errorbrain-server
-```
-
-Server runs on `http://localhost:8000`
-
-## API Endpoints
-
-### `GET /healthz`
-
-Health check endpoint.
-
-**Response:**
-
-```json
 {
   "status": "ok",
   "app": "errorbrain-server",
   "llm_provider": "openai",
   "model": "local-model",
-  "llm_base_url": "http://localhost:1234/v1",
+  "llm_base_url": "<http://localhost:1234/v1>",
   "obsidian_enabled": true,
   "obsidian_path": "/path/to/vault/errors"
 }
+
 ```
 
 ### `POST /v1/errors`

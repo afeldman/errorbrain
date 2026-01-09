@@ -1,47 +1,6 @@
 # errorbrain Obsidian Extension
 
-## Second Brain Storage for Error Verdicts
-
----
-
-## Purpose
-
-The Obsidian extension transforms **spec/v1 Verdicts** into human-readable Markdown notes, enabling long-term learning, context preservation, and incident documentation in your Obsidian vault.
-
-**errorbrain urteilt** (machine-readable Verdict)
-**Obsidian erinnert** (human-searchable Notes)
-**Menschen lernen** (reflection & knowledge base)
-
----
-
-## Architecture
-
-```
-Verdict (spec/v1 JSON)
-   ↓
-Obsidian Exporter
-   ├─ spec_models.py (parse & validate)
-   ├─ mapping.py (verdict → template context)
-   └─ exporter.py (render & write)
-   ↓
-Markdown Note (.md)
-   ↓
-Obsidian Vault (searchable, linkable, personal)
-```
-
-**Critical Rule:** The Obsidian extension is **NOT part of the Core**.
-
-- ✅ It imports **only spec/v1** (Verdict, no ErrorEvent)
-- ✅ It knows **nothing about reasoning, ports, API, or storage**
-- ✅ It is **pure adapter logic**: Verdict → Markdown
-- ✅ It **respects the verdict** as the single source of truth
-- ❌ No re-scoring, no re-reasoning, no new analysis
-
----
-
-## Project Structure
-
-```
+```text
 extensions/obsidian/
 ├── __init__.py
 ├── exporter.py              # Main: Verdict → Markdown
@@ -54,30 +13,6 @@ extensions/obsidian/
 │   └── sample-incident-flux.md       # Generated Markdown
 ├── README.md                # This file
 └── PROMPT.md                # Implementation prompt
-```
-
----
-
-## How It Works
-
-### 1. Input: spec/v1 Verdict (JSON)
-
-Any valid Verdict from errorbrain:
-
-```json
-{
-  "id": "verdict-uuid",
-  "event_id": "event-uuid",
-  "hypothesis": {
-    "title": "GitOps reconciliation blocked",
-    "description": "...",
-    "confidence": 0.85
-  },
-  "impact": {
-    "severity": "critical",
-    "affected_components": ["flux-controller", "app-api"]
-  },
-  "recommended_actions": [
     {
       "title": "...",
       "description": "...",
@@ -89,7 +24,7 @@ Any valid Verdict from errorbrain:
 }
 ```
 
-### 2. Processing
+## 2. Processing
 
 ```python
 from extensions.obsidian.exporter import ObsidianExporter
