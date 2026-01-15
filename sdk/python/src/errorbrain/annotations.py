@@ -14,12 +14,14 @@ class ErrorAnnotation:
 
     def to_context(self) -> Dict[str, Any]:
         return {
-            k: v for k, v in {
-                "component": self.component,
-                "severity": self.severity,
-                "owner": self.owner,
-                "retryable": self.retryable,
-                "expected_errors": self.expected_errors,
-                "tags": self.tags,
-            }.items() if v is not None
+            "_errorbrain_annotation": {
+                k: v for k, v in {
+                    "component": self.component,
+                    "severity": self.severity,
+                    "owner": self.owner,
+                    "retryable": self.retryable,
+                    "expected_errors": self.expected_errors,
+                    "tags": self.tags,
+                }.items() if v is not None
+            }
         }

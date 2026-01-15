@@ -6,6 +6,16 @@ from errorbrain.client import (
     ExplainResponse,
     Verdict,
 )
+from .annotations import ErrorAnnotation
+from .decorators import errorbrain
+from .context import llm_try
 
 __version__ = "0.1.0"
-__all__ = ["ErrorBrainClient", "ErrorEvent", "Verdict", "ExplainResponse"]
+__all__ = ["ErrorBrainClient",
+    "ErrorEvent",
+    "Verdict",
+    "ExplainResponse",
+    "ErrorAnnotation",
+    "errorbrain",
+    "llm_try",
+]

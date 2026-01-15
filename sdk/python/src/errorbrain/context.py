@@ -36,8 +36,8 @@ class llm_try:
             exc,
             project=self.project,
             extra_context={
-                "annotation": self.annotation.to_context(),
-                "context": "with llm_try",
+                **self.annotation.to_context(),
+                "scope": "context-manager",
             },
         )
         return False

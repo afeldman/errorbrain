@@ -35,9 +35,10 @@ def errorbrain(
                     exc,
                     project=project,
                     extra_context={
-                        "annotation": annotation.to_context(),
+                        **annotation.to_context(),
                         "function": func.__qualname__,
                         "module": func.__module__,
+                        "scope": "decorator",
                     },
                 )
                 raise

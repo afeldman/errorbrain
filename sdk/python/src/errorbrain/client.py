@@ -151,6 +151,17 @@ class ErrorBrainClient:
             response.raise_for_status()
             return ExplainResponse.model_validate(response.json())
 
+    def _normalize_context(context: dict[str, Any] | None) -> dict[str, Any]:
+        if not context:
+            return {}
+
+        annotation = context.pop("_errorbrain_annotation", None)
+
+        return {
+            "context": context,
+            "annotations": annotation,
+        }
+
 
 __all__ = [
     "ErrorBrainClient",
