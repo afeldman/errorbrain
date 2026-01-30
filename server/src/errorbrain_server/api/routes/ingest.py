@@ -30,7 +30,7 @@ def set_ingest_port(port: IngestPort) -> None:
 def ingest_event(spec_event: SpecErrorEvent) -> SpecVerdict:
     """Ingest an error event from the spec and return verdict.
 
-    This route is a pure adapter:
+    This route is a pure adapter:s
     - Pydantic automatically validates against spec model
     - Convert to core model
     - Call the core (via port)

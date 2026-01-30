@@ -1,47 +1,30 @@
+# decorators.py
 from __future__ import annotations
+
 from functools import wraps
-from typing import Callable, Any, Optional
+from typing import Callable, Any
 
-from .annotations import ErrorAnnotation
-from .client import send_to_errorbrain
+from .context import ErrorContext
 
 
-def errorbrain(
-    *,
-    component: Optional[str] = None,
-    severity: Optional[str] = None,
-    owner: Optional[str] = None,
-    retryable: Optional[bool] = None,
-    expected_errors: Optional[list[str]] = None,
-    tags: Optional[list[str]] = None,
-    project: Optional[str] = None,
-):
-    annotation = ErrorAnnotation(
-        component=component,
-        severity=severity,
-        owner=owner,
-        retryable=retryable,
-        expected_errors=expected_errors,
-        tags=tags or [],
-    )
+def errorbrain(**context_kwargs):
+    """
+    Decorator wrapper around ErrorContext.
 
-    def decorator(func: Callable[..., Any]):
-        @wraps(func)
+    Usage:
+        @errorbrain(
+            source=Source(...),
+            severity="high",
+        )
+        def my_function():
+            ...
+    """
+
+    def decorator(fn: Callable[..., Any]):
+        @wraps(fn)
         def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except Exception as exc:
-                send_to_errorbrain(
-                    exc,
-                    project=project,
-                    extra_context={
-                        **annotation.to_context(),
-                        "function": func.__qualname__,
-                        "module": func.__module__,
-                        "scope": "decorator",
-                    },
-                )
-                raise
+            with ErrorContext(**context_kwargs):
+                return fn(*args, **kwargs)
 
         return wrapper
 

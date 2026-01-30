@@ -1,21 +1,22 @@
-"""ErrorBrain SDK - Send errors to your Second Brain."""
-
-from errorbrain.client import (
-    ErrorBrainClient,
+from .client import ErrorBrainClient
+from .model import (
     ErrorEvent,
-    ExplainResponse,
     Verdict,
+    ExplainResponse,
+    Impact,
+    Hypothesis,
+    RecommendedAction,
 )
-from .annotations import ErrorAnnotation
-from .decorators import errorbrain
-from .context import llm_try
 
-__version__ = "0.1.0"
-__all__ = ["ErrorBrainClient",
+__all__ = [
+    "ErrorBrainClient",
     "ErrorEvent",
     "Verdict",
     "ExplainResponse",
-    "ErrorAnnotation",
+    "Impact",
+    "Hypothesis",
+    "RecommendedAction",
+    "Annotation",
+    "Source",
     "errorbrain",
-    "llm_try",
 ]

@@ -14,86 +14,8 @@ from typing import Any
 
 import httpx
 import requests
-from pydantic import BaseModel, ConfigDict, Field
 
-
-class Source(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    language: str
-    name: str
-    version: str | None = None
-    environment: str | None = None
-    hostname: str | None = None
-    tags: list[str] = Field(default_factory=list)
-
-
-class Evidence(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    type: str
-    data: dict[str, Any]
-    timestamp: str | None = None
-
-
-class ErrorEvent(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    id: str
-    timestamp: str
-    source: Source
-    message: str
-    stack_trace: str | None = None
-    error_type: str | None = None
-    severity: str | None = None
-    metadata: dict[str, Any] | None = None
-    evidence: list[Evidence] | None = None
-
-
-class Hypothesis(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    title: str
-    description: str
-    confidence: float
-
-
-class Impact(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    severity: str
-    affected_components: list[str]
-
-
-class RecommendedAction(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    title: str
-    description: str
-    urgency: str
-
-
-class Verdict(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    id: str
-    event_id: str
-    hypothesis: Hypothesis
-    impact: Impact
-    recommended_actions: list[RecommendedAction]
-    evidence_refs: list[str]
-    created_at: str
-
-
-class ExplainResponse(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    event_id: str
-    verdict_id: str
-    summary: str
-    details: str
-    actions: list[str]
-
+from errorbrain.model import ErrorEvent, Verdict, ExplainResponse
 
 class ErrorBrainClient:
     """Thin HTTP client for the ErrorBrain API (spec/v1)."""
@@ -162,6 +84,9 @@ class ErrorBrainClient:
             "annotations": annotation,
         }
 
+def send_to_errorbrain(event):
+    client = ErrorBrainClient()
+    return client.verdict(event)
 
 __all__ = [
     "ErrorBrainClient",
